@@ -1,0 +1,16 @@
+FROM ubuntu:latest as downloader
+LABEL maintainer "Peter Zam <mail@peterzam.dev>"
+ARG version=4.4.2
+RUN apt update && apt install curl -y 
+RUN curl -J -L "https://onboardcloud.dl.sourceforge.net/project/qbittorrent/qbittorrent-appimage/qbittorrent-${version}qbittorrent-${version}_x86_64.AppImage" -o /tmp/qbittorrent
+
+FROM ubuntu:latest
+ARG UID=1000
+ARG GID=1000
+RUN apt-get update && groupadd -g ${GID} -r user && useradd -u ${UID} -r -g ${GID} -m user
+RUN apt install qt5dxcb-plugin -yq --no-install-recommends
+
+USER user
+WORKDIR /home/user
+COPY --from=downloader --chmod=0744 --chown=${UID}:${GID} /tmp/qbittorrent ./qbittorrent
+ENTRYPOINT [ "/home/u/qbittorrent","--appimage-extract-and-run" ]
