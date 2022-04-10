@@ -17,8 +17,8 @@ Drawbacks?
 ### Brave Browser in Docker as example:
 
 ### **Things to know before build**
-- "UID" from Dockerfile \<UID for container, should be the same as host's UID - [Why?](#permission-for-shared-folder)>
-- "GID" from Dockerfile \<GID for container, should be the same as host's GID - [Why?](#permission-for-shared-folder)>
+- "UID" from Dockerfile \<UID for container, should be the same as host's UID - [Why?](#permission-for-mounted-folder)>
+- "GID" from Dockerfile \<GID for container, should be the same as host's GID - [Why?](#permission-for-mounted-folder)>
 
 ### Build
 ```bash
@@ -29,7 +29,7 @@ DOCKER_BUILDKIT=1 docker build -t peterzam/x-brave -f dockerfiles/Brave/Dockerfi
 
 ### **Things to check before run**
 - Check [this thread](https://stackoverflow.com/questions/59087200/google-chrome-failed-to-move-to-new-namespace) about [seccomp](https://docs.docker.com/engine/security/seccomp/) and [sandboxing](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/design/sandbox.md)
-- Create folders that need to be shared [Why?](#permission-for-shared-folder)
+- Create folders that need to be mounted [Why?](#permission-for-mounted-folder)
 - For audio, check [here](#audio) first
 - 
 
@@ -41,8 +41,8 @@ docker run -it --rm \
 -e PULSE_SERVER=tcp:<host-ip>:4713 \
 -v ${XAUTHORITY}:/home/user/.Xauthority \
 -v /tmp/.X11-unix:/tmp/.X11-unix \
--v ${PWD}/dockerfiles/Brave/shared/configs:/home/user/.config/BraveSoftware:rw \
--v ${PWD}/dockerfiles/Brave/shared/Downloads:/home/user/Downloads:rw \
+-v ${PWD}/dockerfiles/Brave/mounted/configs:/home/user/.config/BraveSoftware:rw \
+-v ${PWD}/dockerfiles/Brave/mounted/Shared:/home/user/Shared:rw \
 -v /dev/shm:/dev/shm \
 --security-opt seccomp=${PWD}/chrome.json \
 peterzam/x-brave
@@ -56,22 +56,22 @@ docker run -it --rm \
 -e PULSE_SERVER=tcp:<host-ip>:4713 \
 -v ${XAUTHORITY}:/home/user/.Xauthority \
 -v /tmp/.X11-unix:/tmp/.X11-unix \
--v ${PWD}/dockerfiles/Brave/shared/configs:/home/user/.config/BraveSoftware:rw \
--v ${PWD}/dockerfiles/Brave/shared/Downloads:/home/user/Downloads:rw \
+-v ${PWD}/dockerfiles/Brave/mounted/configs:/home/user/.config/BraveSoftware:rw \
+-v ${PWD}/dockerfiles/Brave/mounted/Shared:/home/user/Shared:rw \
 -v /dev/shm:/dev/shm \
 peterzam/x-brave --no-sandbox
 ```
 
 ---
 
-## **Permission for shared folder**
+## **Permission for mounted folder**
 - The application in the container is run with a specific created user, not root.
 - When you mount a folder from host to container, the mounted folder in container carries permissions from original host folder.
 - If there is no folder on host as the docker run command, the docker create the folder automatically with root.
 - So, The UID and GID for the container must have the permission for mounted folder.
 - The easiest way to work them properly is 
     - Create docker image with the same UID and GID as host. 
-    - Created the folders that are need to be shared with container on host.
+    - Created the folders that are need to be mounted with container on host.
 
 ---
 
