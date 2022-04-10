@@ -1,10 +1,24 @@
-# Brave Browser in Docker Container
-## *Use this only if you fully understand what you are doing.*
+# x-docker
+Docker with X Server. Actually, containerise my daily "linux" softwares. 
+## *!!! Use this only if you fully understand what you are doing. This is personal project. Don't use in real-time deployment !!!*
+Why I wrote this project:
+First, I'm bored. Second, I usually stick with a specific OS but I want my apps to be as portable as possible. Third, I thought it would improve security by containersie the apps(but it is not the truth). Fourth, I don't wanna mess with the OS network(route table) for routing different networks with different apps.
+
+---
+Drawbacks?
+- Sharing X Server and shm(shared memory) directly between host and container, PulseAudio(Sound) over network are dangerous for non-experts.
+- The overall size for individual apps with containers will definitely larger than app alone.
+- Some apps may or may not work, pretty difficult to set up like OBS, or not worth to run them on containers like cli apps.
+- Of course, you need docker.
+
 ---
 
+## !!! Read this before build and run !!! 
+### Brave Browser in Docker as example:
+
 ### **Things to know before build**
-- "UID" from line 3 - Dockerfile \<UID for container, should be the same as host's UID - [Why?](#permission-for-shared-folder)>
-- "GID" from line 4 - Dockerfile \<GID for container, should be the same as host's GID - [Why?](#permission-for-shared-folder)>
+- "UID" from Dockerfile \<UID for container, should be the same as host's UID - [Why?](#permission-for-shared-folder)>
+- "GID" from Dockerfile \<GID for container, should be the same as host's GID - [Why?](#permission-for-shared-folder)>
 
 ### Build
 ```bash
