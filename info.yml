@@ -1,0 +1,67 @@
+images:
+  qbittorrent: 
+    version: 4.4.2
+    website: https://www.fosshub.com/qBittorrent.html
+    dockerfile: 
+      path: ${PWD}/Qbittorrent/Dockerfile
+      base: ubuntu:latest
+    shared:
+      -  ${PWD}/Qbittorrent/shared/configs/qBittorrent:/home/u/.config/qBittorrent
+      -  ${PWD}/Qbittorrent/shared/Downloads/torrent:/home/u/Downloads
+    commands:
+      build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-qbittorrent -f  ${PWD}/Qbittorrent/Dockerfile .`
+      run : `docker run -it --rm \
+              -e DISPLAY \
+              -v ${XAUTHORITY}:/home/u/.Xauthority \
+              -v /tmp/.X11-unix:/tmp/.X11-unix \
+              -v ${PWD}/Qbittorrent/shared/configs:/home/user/.config/qBittorrent:rw \
+              -v ${PWD}/Qbittorrent/shared/Downloads:/home/user/Downloads:rw \
+              --name x-qbittorrent \
+              peterzam/x-qbittorrent`
+
+  brave:
+    version: 1.37.111
+    website: https://github.com/brave/brave-browser/releases
+    dockerfile: 
+      path: ${PWD}/Brave/Dockerfile
+      base: ubuntu:latest
+    shared:
+      - ${PWD}/Brave/shared/configs:/home/user/.config/BraveSoftware
+      - ${PWD}/Brave/shared/Downloads:/home/user/Downloads
+    commands:
+      build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-brave -f ${PWD}/Brave/Dockerfile .`
+      run : `docker run -it --rm \
+              --name x-brave \
+              -e DISPLAY \
+              -e PULSE_SERVER=tcp:<host-ip>:4713 \
+              -v ${XAUTHORITY}:/home/user/.Xauthority \
+              -v /tmp/.X11-unix:/tmp/.X11-unix \
+              -v ${PWD}/Brave/shared/configs:/home/user/.config/BraveSoftware:rw \
+              -v ${PWD}/Brave/shared/Downloads:/home/user/Downloads:rw \
+              -v /dev/shm:/dev/shm \
+              --security-opt seccomp=${PWD}/chrome.json \
+              peterzam/x-brave
+              `
+  element:
+    version: 1.10.8
+    website: https://element.io/get-started#linux-details
+    dockerfile: 
+      path: ${PWD}/Element/Dockerfile
+      base: ubuntu
+    shared:
+      - ${PWD}/Element/shared/configs:/home/user/.config/Element
+      - ${PWD}/Element/shared/Downloads:/home/user/Downloads
+    commands:
+      build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-element -f  ${PWD}/Element/Dockerfile .`
+      run : `docker run -it --rm \
+              --name x-element \
+              -e DISPLAY \
+              -e PULSE_SERVER=tcp:<host-ip>:4713 \
+              -v ${XAUTHORITY}:/home/user/.Xauthority \
+              -v /tmp/.X11-unix:/tmp/.X11-unix \
+              -v /dev/shm:/dev/shm \
+              -v ${PWD}/Element/shared/configs:/home/user/.config/Element:rw \
+              -v ${PWD}/Element/shared/Downloads:/home/user/Downloads:rw \
+              --security-opt seccomp=${PWD}/chrome.json \
+              peterzam/x-element
+              `
