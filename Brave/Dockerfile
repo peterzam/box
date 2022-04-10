@@ -17,6 +17,7 @@ RUN apt install --yes --no-install-recommends \
     && apt-get install -yq --no-install-recommends \
         brave-browser \
     && rm -rf /var/lib/apt/lists/* \
+    && apt autoclean && apt autoremove --purge \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
     && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
 

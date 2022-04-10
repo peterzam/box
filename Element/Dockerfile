@@ -15,6 +15,7 @@ RUN apt install -yq --no-install-recommends \
         > /etc/apt/sources.list.d/element-io.list \
     && apt update && apt install element-desktop -yq --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
+    && apt autoclean && apt autoremove --purge \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
     && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
 
