@@ -9,7 +9,7 @@ RUN apt install -yq --no-install-recommends \
         ca-certificates \
         gnupg \
         libgbm-dev \
-        pulseaudio \
+        libpulse0 \
     && wget -O /usr/share/keyrings/element-io-archive-keyring.gpg https://packages.element.io/debian/element-io-archive-keyring.gpg \
     && echo "deb [signed-by=/usr/share/keyrings/element-io-archive-keyring.gpg] https://packages.element.io/debian/ default main" \
         > /etc/apt/sources.list.d/element-io.list \

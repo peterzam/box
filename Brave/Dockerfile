@@ -7,7 +7,7 @@ RUN apt install --yes --no-install-recommends \
         fonts-tlwg-loma-ttf \
         gnupg \
         libgl1 \
-        pulseaudio \
+        libpulse0 \
     && apt-key adv --keyserver keyserver.ubuntu.com \
         --recv-keys D8BAD4DE7EE17AF52A834B2D0BB75829C2D4E821 \
     && echo "deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" \
