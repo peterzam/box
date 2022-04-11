@@ -1,6 +1,6 @@
 images:
   qbittorrent: 
-    version: 4.4.2
+    version: "4.4.2"
     website: https://www.fosshub.com/qBittorrent.html
     source: AppImage
     dockerfile: 
@@ -21,7 +21,7 @@ images:
               peterzam/x-qbittorrent`
 
   brave:
-    version: 1.37.111
+    version: "1.37.111"
     website: https://github.com/brave/brave-browser/releases
     source: apt
     dockerfile: 
@@ -45,12 +45,12 @@ images:
               peterzam/x-brave
               `
   element:
-    version: 1.10.8
+    version: "1.10.8"
     website: https://element.io/get-started#linux-details
     source: apt
     dockerfile: 
       path: ${PWD}/Element/Dockerfile
-      base: ubuntu
+      base: ubuntu:latest
     mounted:
       - ${PWD}/Element/mounted/configs:/home/user/.config/Element
       - ${PWD}/Element/mounted/Shared:/home/user/Shared
@@ -67,4 +67,28 @@ images:
               -v ${PWD}/Element/mounted/Shared:/home/user/Shared:rw \
               --security-opt seccomp=${PWD}/chrome.json \
               peterzam/x-element
+              `
+  discord:
+    version: "April 4,2022"
+    website: https://discord.com/api/download?platform=linux&format=tar.gz
+    source: apt
+    dockerfile: 
+      path: ${PWD}/Discord/Dockerfile
+      base: ubuntu:latest
+    mounted:
+      - ${PWD}/Discord/mounted/configs:/home/user/.config/Discord
+      - ${PWD}/Discord/mounted/Shared:/home/user/Discord
+    commands:
+      build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-discord -f  ${PWD}/Discord/Dockerfile .`
+      run : `docker run -it --rm \
+              --name x-discord \
+              -e DISPLAY \
+              -e PULSE_SERVER=tcp:<host-ip>:4713 \
+              -v ${XAUTHORITY}:/home/user/.Xauthority \
+              -v /tmp/.X11-unix:/tmp/.X11-unix \
+              -v /dev/shm:/dev/shm \
+              -v ${PWD}/Discord/mounted/configs:/home/user/.config/discord:rw \
+              -v ${PWD}/Discord/mounted/Shared:/home/user/Shared:rw \
+              --security-opt seccomp=${PWD}/chrome.json \
+              peterzam/x-discord
               `
