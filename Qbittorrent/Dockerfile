@@ -17,4 +17,4 @@ RUN apt install qt5dxcb-plugin -yq --no-install-recommends \
 USER user
 WORKDIR /home/user
 COPY --from=downloader --chmod=0744 --chown=${UID}:${GID} /tmp/qbittorrent ./qbittorrent
-ENTRYPOINT [ "/home/u/qbittorrent","--appimage-extract-and-run" ]
+ENTRYPOINT [ "/home/user/qbittorrent","--appimage-extract-and-run" ]

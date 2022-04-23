@@ -13,7 +13,7 @@ images:
       build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-qbittorrent -f  ${PWD}/Qbittorrent/Dockerfile .`
       run : `docker run -it --rm \
               -e DISPLAY \
-              -v ${XAUTHORITY}:/home/u/.Xauthority \
+              -v ${XAUTHORITY}:/home/user/.Xauthority \
               -v /tmp/.X11-unix:/tmp/.X11-unix \
               -v ${PWD}/Qbittorrent/mounted/configs:/home/user/.config/qBittorrent:rw \
               -v ${PWD}/Qbittorrent/mounted/Shared:/home/user/Shared:rw \
