@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:impish
 ARG UID=1000
 ARG GID=1000
 RUN apt-get update && groupadd -g ${GID} -r user && useradd -u ${UID} -r -G audio,video -g ${GID} -m user

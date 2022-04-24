@@ -4,7 +4,7 @@ RUN apk update \
     && curl -fSL "https://discord.com/api/download?platform=linux&format=tar.gz" -o discord.tar.gz \
     && tar xzvf discord.tar.gz
 
-FROM ubuntu:latest
+FROM ubuntu:impish
 ARG UID=1000
 ARG GID=1000
 ENV TZ=Europe/London

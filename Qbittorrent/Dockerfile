@@ -4,7 +4,7 @@ ARG version=4.4.2
 RUN apt update && apt install curl -y 
 RUN curl -J -L "https://onboardcloud.dl.sourceforge.net/project/qbittorrent/qbittorrent-appimage/qbittorrent-${version}/qbittorrent-${version}_x86_64.AppImage" -o /tmp/qbittorrent
 
-FROM ubuntu:latest
+FROM ubuntu:impish
 ARG UID=1000
 ARG GID=1000
 RUN apt-get update && groupadd -g ${GID} -r user && useradd -u ${UID} -r -g ${GID} -m user

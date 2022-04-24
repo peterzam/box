@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:impish
 ARG UID=1000
 ARG GID=1000
 ENV TZ=Europe/London
