@@ -1,7 +1,8 @@
-FROM ubuntu:latest as downloader
+FROM alpine:latest as downloader
 ARG version=4.4.2
-RUN apt update && apt install curl -y 
-RUN curl -J -L "https://onboardcloud.dl.sourceforge.net/project/qbittorrent/qbittorrent-appimage/qbittorrent-${version}/qbittorrent-${version}_x86_64.AppImage" -o /tmp/qbittorrent
+RUN apk update \
+    && apk add curl \
+    && "https://onboardcloud.dl.sourceforge.net/project/qbittorrent/qbittorrent-appimage/qbittorrent-${version}/qbittorrent-${version}_x86_64.AppImage" -o /tmp/qbittorrent
 
 FROM ubuntu:impish
 ARG UID=1000
