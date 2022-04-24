@@ -22,7 +22,7 @@ RUN apt install -yq --no-install-recommends \
     libappindicator1 \
     gconf2 \
     gconf-service \
-    gvfs-bin \
+    gvfs \
     libasound2 \
     libcap2 \
     libgconf-2-4 \
