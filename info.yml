@@ -116,7 +116,7 @@ images:
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
               -v ${XAUTHORITY}:/home/user/.Xauthority \
               -v /tmp/.X11-unix:/tmp/.X11-unix \
-              -v ${PWD}/Firefox/mounted/configs:/home/user/.config/mozilla:rw \
+              -v ${PWD}/Firefox/mounted/configs:/home/user/.mozilla:rw \
               -v ${PWD}/Firefox/mounted/Shared:/home/user/Shared:rw \
               peterzam/x-firefox
               `
