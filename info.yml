@@ -1,11 +1,12 @@
 images:
   qbittorrent: 
     version: "4.4.2"
-    website: https://www.fosshub.com/qBittorrent.html
-    source: AppImage
+    auto_update: false
+    website: "https://www.fosshub.com/qBittorrent.html"
+    source: "AppImage"
     dockerfile: 
       path: ${PWD}/Qbittorrent/Dockerfile
-      base: ubuntu:latest
+      base: "ubuntu:impish"
     mounted:
       -  ${PWD}/Qbittorrent/mounted/configs/qBittorrent:/home/u/.config/qBittorrent
       -  ${PWD}/Qbittorrent/mounted/Shared/torrent:/home/u/Shared
@@ -22,11 +23,12 @@ images:
 
   brave:
     version: "1.37.111"
-    website: https://github.com/brave/brave-browser/releases
-    source: apt
+    auto_update: true
+    website: "https://github.com/brave/brave-browser/releases"
+    source: "apt"
     dockerfile: 
       path: ${PWD}/Brave/Dockerfile
-      base: ubuntu:latest
+      base: "ubuntu:impish"
     mounted:
       - ${PWD}/Brave/mounted/configs:/home/user/.config/BraveSoftware
       - ${PWD}/Brave/mounted/Shared:/home/user/Shared
@@ -46,11 +48,12 @@ images:
               `
   element:
     version: "1.10.8"
-    website: https://element.io/get-started#linux-details
-    source: apt
+    auto_update: true
+    website: "https://element.io/get-started#linux-details"
+    source: "apt"
     dockerfile: 
       path: ${PWD}/Element/Dockerfile
-      base: ubuntu:latest
+      base: "ubuntu:impish"
     mounted:
       - ${PWD}/Element/mounted/configs:/home/user/.config/Element
       - ${PWD}/Element/mounted/Shared:/home/user/Shared
@@ -70,14 +73,15 @@ images:
               `
   discord:
     version: "April 4,2022"
-    website: https://discord.com/api/download?platform=linux&format=tar.gz
-    source: apt
+    auto_update: true
+    website: "https://discord.com/api/download?platform=linux&format=tar.gz"
+    source: "external","tar"
     dockerfile: 
       path: ${PWD}/Discord/Dockerfile
-      base: ubuntu:latest
+      base: ubuntu:impish
     mounted:
       - ${PWD}/Discord/mounted/configs:/home/user/.config/Discord
-      - ${PWD}/Discord/mounted/Shared:/home/user/Discord
+      - ${PWD}/Discord/mounted/Shared:/home/user/Shared
     commands:
       build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-discord -f  ${PWD}/Discord/Dockerfile .`
       run : `docker run -it --rm \
@@ -91,4 +95,28 @@ images:
               --security-opt seccomp=${PWD}/chrome.json \
               --shm-size 2g \
               peterzam/x-discord
+              `
+
+  firefox:
+    version: "99.0.1"
+    auto_update: true
+    website: "https://www.mozilla.org/en-US/firefox/releases/"
+    source: "external","tar"
+    dockerfile: 
+      path: ${PWD}/Firefox/Dockerfile
+      base: ubuntu:impish
+    mounted:
+      - ${PWD}/Firefox/mounted/configs:/home/user/.config/mozilla
+      - ${PWD}/Firefox/mounted/Shared:/home/user/Shared
+    commands:
+      build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-firefox -f ${PWD}/Firefox/Dockerfile .`
+      run : `	docker run -it --rm \
+              --name x-firefox \
+              -e DISPLAY \
+              -e PULSE_SERVER=tcp:<host-ip>:4713 \
+              -v ${XAUTHORITY}:/home/user/.Xauthority \
+              -v /tmp/.X11-unix:/tmp/.X11-unix \
+              -v ${PWD}/Firefox/mounted/configs:/home/user/.config/mozilla:rw \
+              -v ${PWD}/Firefox/mounted/Shared:/home/user/Shared:rw \
+              peterzam/x-firefox
               `
