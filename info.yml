@@ -40,7 +40,7 @@ images:
               -v /tmp/.X11-unix:/tmp/.X11-unix \
               -v ${PWD}/Brave/mounted/configs:/home/user/.config/BraveSoftware:rw \
               -v ${PWD}/Brave/mounted/Shared:/home/user/Shared:rw \
-              -v /dev/shm:/dev/shm \
+              --shm-size 2g \
               --security-opt seccomp=${PWD}/chrome.json \
               peterzam/x-brave
               `
@@ -62,10 +62,10 @@ images:
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
               -v ${XAUTHORITY}:/home/user/.Xauthority \
               -v /tmp/.X11-unix:/tmp/.X11-unix \
-              -v /dev/shm:/dev/shm \
               -v ${PWD}/Element/mounted/configs:/home/user/.config/Element:rw \
               -v ${PWD}/Element/mounted/Shared:/home/user/Shared:rw \
               --security-opt seccomp=${PWD}/chrome.json \
+              --shm-size 2g \
               peterzam/x-element
               `
   discord:
@@ -86,9 +86,9 @@ images:
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
               -v ${XAUTHORITY}:/home/user/.Xauthority \
               -v /tmp/.X11-unix:/tmp/.X11-unix \
-              -v /dev/shm:/dev/shm \
               -v ${PWD}/Discord/mounted/configs:/home/user/.config/discord:rw \
               -v ${PWD}/Discord/mounted/Shared:/home/user/Shared:rw \
               --security-opt seccomp=${PWD}/chrome.json \
+              --shm-size 2g \
               peterzam/x-discord
               `

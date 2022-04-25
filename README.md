@@ -6,7 +6,7 @@ First, I'm bored. Second, I usually stick with a specific OS but I want my apps 
 
 ---
 Drawbacks?
-- Sharing X Server and shm(shared memory) directly between host and container, PulseAudio(Sound) over network are dangerous for non-experts.
+- Sharing X Server directly between host and container, PulseAudio(Sound) over network are dangerous for non-experts.
 - The overall size for individual apps with containers will definitely larger than app alone.
 - Some apps may or may not work, pretty difficult to set up like OBS, or not worth to run them on containers like cli apps.
 - Of course, you need docker.
@@ -43,7 +43,7 @@ docker run -it --rm \
 -v /tmp/.X11-unix:/tmp/.X11-unix \
 -v ${PWD}/dockerfiles/Brave/mounted/configs:/home/user/.config/BraveSoftware:rw \
 -v ${PWD}/dockerfiles/Brave/mounted/Shared:/home/user/Shared:rw \
--v /dev/shm:/dev/shm \
+--shm-size 2g \
 --security-opt seccomp=${PWD}/chrome.json \
 peterzam/x-brave
 ```
@@ -58,7 +58,7 @@ docker run -it --rm \
 -v /tmp/.X11-unix:/tmp/.X11-unix \
 -v ${PWD}/dockerfiles/Brave/mounted/configs:/home/user/.config/BraveSoftware:rw \
 -v ${PWD}/dockerfiles/Brave/mounted/Shared:/home/user/Shared:rw \
--v /dev/shm:/dev/shm \
+--shm-size 2g \
 peterzam/x-brave --no-sandbox
 ```
 
