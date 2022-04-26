@@ -120,3 +120,28 @@ images:
               -v ${PWD}/Firefox/mounted/Shared:/home/user/Shared:rw \
               peterzam/x-firefox
               `
+
+  tor:
+    version: "11.0.10"
+    auto_update: false
+    website: "https://www.torproject.org/download/"
+    source: "external","tar"
+    dockerfile: 
+      path: ${PWD}/Tor/Dockerfile
+      base: ubuntu:impish
+    mounted:
+      - ${PWD}/Tor/mounted/configs:/home/user/tor/TorBrowser/Data/Browser
+      - ${PWD}/Tor/mounted/Shared:/home/user/Shared:rw
+    commands:
+      build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-tor -f ${PWD}/Tor/Dockerfile .`
+      run : `	docker run -it --rm \
+              --name x-tor \
+              -e DISPLAY \
+              -e PULSE_SERVER=tcp:<host-ip>:4713 \
+              -v ${XAUTHORITY}:/home/user/.Xauthority \
+              -v /tmp/.X11-unix:/tmp/.X11-unix \
+              -v ${PWD}/Tor/mounted/configs:/home/user/tor/TorBrowser/Data/Browser:rw \
+              -v ${PWD}/Tor/mounted/Shared:/home/user/Shared:rw \
+              peterzam/x-tor
+              `
+    remark: "config file path is not actually the default tor's profile path"
