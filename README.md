@@ -46,7 +46,7 @@ docker run -it --rm \
 -v ${PWD}/dockerfiles/Brave/mounted/configs:/home/user/.config/BraveSoftware:rw \
 -v ${PWD}/dockerfiles/Brave/mounted/Shared:/home/user/Shared:rw \
 --shm-size 2g \
---security-opt seccomp=${PWD}/chrome.json \
+--security-opt seccomp=${PWD}/rules.json \
 peterzam/x-brave
 ```
 
