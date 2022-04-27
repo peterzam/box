@@ -5,6 +5,10 @@ Why did I write this?
 
 First, I'm bored. Second, I want to make my daily apps portable. Third, I thought it would improve security by containerising the apps(but it is not the truth). Fourth, I don't want to mess with the OS network(route table) for routing different networks for different apps.
 
+So What is the result?
+
+Till now, I am fairly satisfied about this and since currently there are only a few images, maybe in the future, I would change my mind.
+
 ---
 Drawbacks?
 - Sharing X Server directly between host and container, PulseAudio(Sound) over the network is dangerous for daily use.
