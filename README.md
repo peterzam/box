@@ -1,5 +1,5 @@
 # xDocker
-Docker with X Server. Actually, containerised my daily "linux" softwares. 
+Docker with X Server. Actually, containerised my daily "Linux" softwares. 
 ## *!!! Use this only if you fully understand what you are doing. This is a personal project. Don't use it in real-time deployment !!!*
 Why did I write this?
 
