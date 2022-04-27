@@ -98,3 +98,12 @@ about pulseaudio over TCP.
 - Replace `<host-ip>` with host's IP address in `docker run` command.
 
 ---
+
+## **Fonts**
+- Font packages are pretty big for each image compare to original linux shared library type. 
+- Main packages that used are `fonts-noto-color-emoji fonts-noto-cjk fonts-noto-extra`
+- Among them `fonts-noto-extra` which includes unicode emojis alone is over 300MB.
+- So I decided to left it.
+- But if you'd like to mount/share the fonts externally between the container and host, the path is `/usr/share/fonts/`
+
+---

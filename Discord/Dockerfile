@@ -41,7 +41,7 @@ RUN apt install -yq --no-install-recommends \
     && apt autoclean && apt autoremove --purge \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
     && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
-# font-noto-extra <- add this package for some font errors but the size is large.
+# fonts-noto-extra <- add this package for some font errors but the size is large.
 
 USER user
 WORKDIR /home/user
