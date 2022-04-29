@@ -1,7 +1,9 @@
 FROM ubuntu:impish
 ARG UID=1000
 ARG GID=1000
+
 RUN apt-get update && groupadd -g ${GID} -r user && useradd -u ${UID} -s /bin/bash -r -G audio,video -g ${GID} -m user
+
 RUN apt install --yes --no-install-recommends \
         ca-certificates \
         gnupg \
