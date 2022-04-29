@@ -8,10 +8,11 @@ RUN apk update \
 FROM ubuntu:impish
 ARG UID=1000
 ARG GID=1000
-ENV TZ=Europe/London
-RUN apt-get update && groupadd -g ${GID} -r user && useradd -u ${UID} -r -G audio,video -g ${GID} -m user
-RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -y tzdata keyboard-configuration --no-install-recommends
+
+RUN apt-get update && groupadd -g ${GID} -r user && useradd -u ${UID} -s /bin/bash -r -G audio,video -g ${GID} -m user
 COPY --from=downloader --chown=user:user /tor-browser_en-US/ /home/user/tor
+
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -y tzdata keyboard-configuration --no-install-recommends
 RUN apt install -yq --no-install-recommends \
     libx11-xcb-dev \
     libxt6 \ 
@@ -20,6 +21,7 @@ RUN apt install -yq --no-install-recommends \
     file \
     libpulse0 \
     libavcodec-dev \
+    libgl1 \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge \
