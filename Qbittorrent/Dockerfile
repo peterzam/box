@@ -7,8 +7,11 @@ RUN apk update \
 FROM ubuntu:impish
 ARG UID=1000
 ARG GID=1000
-RUN apt-get update && groupadd -g ${GID} -r user && useradd -u ${UID} -r -g ${GID} -m user
+
+RUN apt-get update && groupadd -g ${GID} -r user && useradd -u ${UID} -s /bin/bash -r -G audio,video -g ${GID} -m user
+
 RUN apt install qt5dxcb-plugin -yq --no-install-recommends \
+        && fc-cache -fv \
         && rm -rf /var/lib/apt/lists/* \
         && apt autoclean && apt autoremove --purge \
         && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
