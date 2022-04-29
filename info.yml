@@ -145,3 +145,28 @@ images:
               peterzam/x-tor
               `
     remark: "config file path is not actually the default tor's profile path"
+
+  librewolf:
+    version: "99.0.1-1"
+    auto_update: true
+    website: "https://librewolf.net/installation/linux/"
+    source: "AppImage"
+    dockerfile: 
+      path: ${PWD}/LibreWolf/Dockerfile
+      base: ubuntu:impish
+    mounted:
+      - ${PWD}/LibreWolf/mounted/configs:/home/user/.librewolf
+      - ${PWD}/LibreWolf/mounted/Shared:/home/user/Shared
+    commands:
+      build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-librewolf -f ${PWD}/LibreWolf/Dockerfile .`
+      run : `	docker run -it --rm \
+              --name x-librewolf \
+              -e DISPLAY \
+              -e PULSE_SERVER=tcp:<host-ip>:4713 \
+              -v ${XAUTHORITY}:/home/user/.Xauthority \
+              -v /tmp/.X11-unix:/tmp/.X11-unix \
+              -v ${PWD}/LibreWolf/mounted/configs:/home/user/.librewolf:rw \
+              -v ${PWD}/LibreWolf/mounted/Shared:/home/user/Shared:rw \
+              peterzam/x-librewolf
+              `
+
