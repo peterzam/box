@@ -12,7 +12,7 @@ images:
       -  ${PWD}/Qbittorrent/mounted/Shared/torrent:/home/u/Shared
     commands:
       build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-qbittorrent -f  ${PWD}/Qbittorrent/Dockerfile .`
-      run : `docker run -it --rm \
+      run : `docker run --rm \
               -e DISPLAY \
               -v ${XAUTHORITY}:/home/user/.Xauthority \
               -v /tmp/.X11-unix:/tmp/.X11-unix \
@@ -34,7 +34,7 @@ images:
       - ${PWD}/Brave/mounted/Shared:/home/user/Shared
     commands:
       build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-brave -f ${PWD}/Brave/Dockerfile .`
-      run : `docker run -it --rm \
+      run : `docker run --rm \
               --name x-brave \
               -e DISPLAY \
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
@@ -42,6 +42,7 @@ images:
               -v /tmp/.X11-unix:/tmp/.X11-unix \
               -v ${PWD}/Brave/mounted/configs:/home/user/.config/BraveSoftware:rw \
               -v ${PWD}/Brave/mounted/Shared:/home/user/Shared:rw \
+              -v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
               --shm-size 2g \
               --security-opt seccomp=${PWD}/rules.json \
               peterzam/x-brave
@@ -59,7 +60,7 @@ images:
       - ${PWD}/Element/mounted/Shared:/home/user/Shared
     commands:
       build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-element -f  ${PWD}/Element/Dockerfile .`
-      run : `docker run -it --rm \
+      run : `docker run --rm \
               --name x-element \
               -e DISPLAY \
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
@@ -84,7 +85,7 @@ images:
       - ${PWD}/Discord/mounted/Shared:/home/user/Shared
     commands:
       build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-discord -f  ${PWD}/Discord/Dockerfile .`
-      run : `docker run -it --rm \
+      run : `docker run --rm \
               --name x-discord \
               -e DISPLAY \
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
@@ -92,6 +93,7 @@ images:
               -v /tmp/.X11-unix:/tmp/.X11-unix \
               -v ${PWD}/Discord/mounted/configs:/home/user/.config/discord:rw \
               -v ${PWD}/Discord/mounted/Shared:/home/user/Shared:rw \
+              -v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
               --security-opt seccomp=${PWD}/rules.json \
               --shm-size 2g \
               peterzam/x-discord
@@ -110,7 +112,7 @@ images:
       - ${PWD}/Firefox/mounted/Shared:/home/user/Shared
     commands:
       build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-firefox -f ${PWD}/Firefox/Dockerfile .`
-      run : `	docker run -it --rm \
+      run : `	docker run --rm \
               --name x-firefox \
               -e DISPLAY \
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
@@ -118,6 +120,7 @@ images:
               -v /tmp/.X11-unix:/tmp/.X11-unix \
               -v ${PWD}/Firefox/mounted/configs:/home/user/.mozilla:rw \
               -v ${PWD}/Firefox/mounted/Shared:/home/user/Shared:rw \
+              -v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
               peterzam/x-firefox
               `
 
@@ -134,7 +137,7 @@ images:
       - ${PWD}/Tor/mounted/Shared:/home/user/Shared:rw
     commands:
       build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-tor -f ${PWD}/Tor/Dockerfile .`
-      run : `	docker run -it --rm \
+      run : `	docker run --rm \
               --name x-tor \
               -e DISPLAY \
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
@@ -159,7 +162,7 @@ images:
       - ${PWD}/LibreWolf/mounted/Shared:/home/user/Shared
     commands:
       build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-librewolf -f ${PWD}/LibreWolf/Dockerfile .`
-      run : `	docker run -it --rm \
+      run : `	docker run --rm \
               --name x-librewolf \
               -e DISPLAY \
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
@@ -167,6 +170,7 @@ images:
               -v /tmp/.X11-unix:/tmp/.X11-unix \
               -v ${PWD}/LibreWolf/mounted/configs:/home/user/.librewolf:rw \
               -v ${PWD}/LibreWolf/mounted/Shared:/home/user/Shared:rw \
+              -v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
               peterzam/x-librewolf
               `
 
