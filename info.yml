@@ -40,6 +40,7 @@ images:
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
               -v ${XAUTHORITY}:/home/user/.Xauthority \
               -v /tmp/.X11-unix:/tmp/.X11-unix \
+              -v ${HOME}/.config/pulse/cookie:/home/user/.pulse-cookie:ro \
               -v ${PWD}/Brave/mounted/configs:/home/user/.config/BraveSoftware:rw \
               -v ${PWD}/Brave/mounted/Shared:/home/user/Shared:rw \
               -v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
@@ -66,6 +67,7 @@ images:
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
               -v ${XAUTHORITY}:/home/user/.Xauthority \
               -v /tmp/.X11-unix:/tmp/.X11-unix \
+              -v ${HOME}/.config/pulse/cookie:/home/user/.pulse-cookie:ro \
               -v ${PWD}/Element/mounted/configs:/home/user/.config/Element:rw \
               -v ${PWD}/Element/mounted/Shared:/home/user/Shared:rw \
               --security-opt seccomp=${PWD}/rules.json \
@@ -91,6 +93,7 @@ images:
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
               -v ${XAUTHORITY}:/home/user/.Xauthority \
               -v /tmp/.X11-unix:/tmp/.X11-unix \
+              -v ${HOME}/.config/pulse/cookie:/home/user/.pulse-cookie:ro \
               -v ${PWD}/Discord/mounted/configs:/home/user/.config/discord:rw \
               -v ${PWD}/Discord/mounted/Shared:/home/user/Shared:rw \
               -v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
@@ -118,6 +121,7 @@ images:
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
               -v ${XAUTHORITY}:/home/user/.Xauthority \
               -v /tmp/.X11-unix:/tmp/.X11-unix \
+              -v ${HOME}/.config/pulse/cookie:/home/user/.pulse-cookie:ro \
               -v ${PWD}/Firefox/mounted/configs:/home/user/.mozilla:rw \
               -v ${PWD}/Firefox/mounted/Shared:/home/user/Shared:rw \
               -v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
@@ -168,6 +172,7 @@ images:
               -e PULSE_SERVER=tcp:<host-ip>:4713 \
               -v ${XAUTHORITY}:/home/user/.Xauthority \
               -v /tmp/.X11-unix:/tmp/.X11-unix \
+              -v ${HOME}/.config/pulse/cookie:/home/user/.pulse-cookie:ro \
               -v ${PWD}/LibreWolf/mounted/configs:/home/user/.librewolf:rw \
               -v ${PWD}/LibreWolf/mounted/Shared:/home/user/Shared:rw \
               -v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
