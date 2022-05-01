@@ -177,3 +177,28 @@ images:
               peterzam/x-librewolf
               `
 
+  telegram:
+    version: "3.7.3"
+    auto_update: true
+    website: "https://github.com/telegramdesktop/tdesktop/releases/"
+    source: "external","tar","github"
+    dockerfile: 
+      path: ${PWD}/Telegram/Dockerfile
+      base: ubuntu:impish
+    mounted:
+      - ${PWD}/Telegram/mounted/configs:/home/user/.local/share/TelegramDesktop
+      - ${PWD}/Telegram/mounted/Shared:/home/user/Shared
+    commands:
+      build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-telegram -f ${PWD}/Telegram/Dockerfile .`
+      run : `docker run --rm \
+              --name x-telegram \
+              -e DISPLAY \
+              -v ${XAUTHORITY}:/home/user/.Xauthority:ro \
+              -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+              -v /run/user/1000/pulse:/run/user/1000/pulse:rw \
+              -v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
+              -v ${PWD}/Telegram/mounted/configs:/home/user/.local/share/TelegramDesktop:rw \
+              -v ${PWD}/Telegram/mounted/Shared:/home/user/Shared:rw \
+              --security-opt seccomp=${PWD}/rules.json \
+              peterzam/x-telegram
+              `
