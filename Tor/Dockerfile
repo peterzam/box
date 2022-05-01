@@ -30,4 +30,4 @@ RUN apt install -yq --no-install-recommends \
 
 USER user
 WORKDIR /home/user
-ENTRYPOINT [ "/home/user/tor/Browser/start-tor-browser", "-v" ]
+ENTRYPOINT [ "/home/user/tor/Browser/start-tor-browser" ]
