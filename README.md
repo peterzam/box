@@ -128,7 +128,7 @@ Recommend fonts:
 ## **libgl1**
 - libGL is OpenGL Mesa driver which use GLX protocol over X server via socket. [Read more here](https://dri.freedesktop.org/wiki/libGL/).
 - Total size of libgl1 including dependencies is about 170MB but I think it is a worth trade-off for UI to install.
-
+- And I decided to mount "/dev/dri" in some containers for [DRI](https://dri.freedesktop.org/wiki/) for graphic performance. 
 ---
 
 ## **apt-transport-https**

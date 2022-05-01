@@ -95,6 +95,7 @@ images:
               -v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
               -v ${PWD}/Discord/mounted/configs:/home/user/.config/discord:rw \
               -v ${PWD}/Discord/mounted/Shared:/home/user/Shared:rw \
+              --device=/dev/dri:/dev/dri \
               --security-opt seccomp=${PWD}/rules.json \
               --shm-size 2g \
               peterzam/x-discord
@@ -172,6 +173,7 @@ images:
               -v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
               -v ${PWD}/LibreWolf/mounted/configs:/home/user/.librewolf:rw \
               -v ${PWD}/LibreWolf/mounted/Shared:/home/user/Shared:rw \
+              --device=/dev/dri:/dev/dri \
               peterzam/x-librewolf
               `
 
