@@ -205,3 +205,28 @@ images:
               --security-opt seccomp=${PWD}/rules.json \
               peterzam/x-telegram
               `
+
+  monero:
+    version: "0.17.3.2"
+    auto_update: true
+    website: "https://www.getmonero.org/downloads/"
+    source: "external","tar"
+    dockerfile: 
+      path: ${PWD}/Monero/Dockerfile
+      base: ubuntu:impish
+    mounted:
+      - ${PWD}/Monero/mounted/configs:/home/user/.config/monero-project
+      - ${PWD}/Monero/mounted/lmdb:/home/user/lmdb
+      - ${PWD}/Monero/mounted/wallets:/home/user/wallets
+    commands:
+      build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-monero -f  ${PWD}/Monero/Dockerfile .`
+      run : `docker run --rm \
+              --name x-monero \
+              -e DISPLAY \
+              -v ${XAUTHORITY}:/home/user/.Xauthority:ro \
+              -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+              -v ${PWD}/Monero/mounted/configs:/home/user/.config/monero-project:rw \
+              -v ${PWD}/Monero/mounted/lmdb:/home/user/lmdb:rw \
+              -v ${PWD}/Monero/mounted/wallets:/home/user/wallets:rw \
+              peterzam/x-monero
+              `
