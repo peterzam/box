@@ -230,3 +230,24 @@ images:
               -v ${PWD}/Monero/mounted/wallets:/home/user/wallets:rw \
               peterzam/x-monero
               `
+
+  winbox:
+    version: "v3.35"
+    auto_update: true
+    website: "https://mikrotik.com/download/"
+    source: "external"
+    dockerfile: 
+      path: ${PWD}/WinBox/Dockerfile
+      base: ubuntu:impish
+    mounted:
+      - ${PWD}/WinBox/mounted/configs:/home/user/.wine
+    commands:
+      build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-winbox -f  ${PWD}/WinBox/Dockerfile .`
+      run : `docker run -it --rm \
+               --name x-winbox \
+               -e DISPLAY \
+               -v ${XAUTHORITY}:/home/user/.Xauthority:ro \
+               -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+               -v ${PWD}/WinBox/mounted/configs:/home/user/.wine:rw \
+               peterzam/x-winbox
+              `
