@@ -1,0 +1,13 @@
+FROM python:slim-buster
+ARG UID=1000
+ARG GID=1000
+
+RUN pip3 install tidal-dl --upgrade
+
+RUN groupadd -g ${GID} -r user && useradd -u ${UID} -s /bin/bash -r -G audio,video -g ${GID} -m user
+
+USER user
+
+WORKDIR /home/user
+
+ENTRYPOINT ["tidal-dl"]
