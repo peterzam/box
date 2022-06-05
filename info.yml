@@ -251,3 +251,26 @@ images:
                -v ${PWD}/WinBox/mounted/configs:/home/user/.wine:rw \
                peterzam/x-winbox
               `
+
+  tidal-dl:
+    version: "v2022-03-04"
+    auto_update: true
+    website: "https://github.com/yaronzz/Tidal-Media-Downloader"
+    source: "pip"
+    dockerfile: 
+      path: ${PWD}/Tidal-dl/Dockerfile
+      base: python:slim-buster
+    mounted:
+      - ${PWD}/Tidal-dl/mounted/Shared:/home/user/download \
+	    - ${PWD}/Tidal-dl/mounted/configs/.tidal-dl.json:/home/user/.tidal-dl.json \
+	    - ${PWD}/Tidal-dl/mounted/configs/.tidal-dl.token.json:/home/user/.tidal-dl.token.json \
+    commands:
+      build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-tidal-dl -f ${PWD}/Tidal-dl/Dockerfile .`
+      run : `docker run --rm -it \
+              --name x-tidal-dl \
+	            -v ${PWD}/Tidal-dl/mounted/Shared:/home/user/download:rw \
+	            -v ${PWD}/Tidal-dl/mounted/configs/.tidal-dl.json:/home/user/.tidal-dl.json \
+	            -v ${PWD}/Tidal-dl/mounted/configs/.tidal-dl.token.json:/home/user/.tidal-dl.token.json \
+              peterzam/x-tidal-dl
+              `
+    remark: "create blank .tidal-dl.json and .tidal-dl.token.json files before first run"
