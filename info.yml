@@ -6,7 +6,7 @@ images:
     source: "AppImage"
     dockerfile: 
       path: ${PWD}/Qbittorrent/Dockerfile
-      base: "ubuntu:impish"
+      base: "ubuntu:latest"
     mounted:
       -  ${PWD}/Qbittorrent/mounted/configs/qBittorrent:/home/u/.config/qBittorrent
       -  ${PWD}/Qbittorrent/mounted/Shared/torrent:/home/u/Shared
@@ -80,7 +80,7 @@ images:
     source: "external","tar"
     dockerfile: 
       path: ${PWD}/Discord/Dockerfile
-      base: ubuntu:impish
+      base: "ubuntu:impish"
     mounted:
       - ${PWD}/Discord/mounted/configs:/home/user/.config/Discord
       - ${PWD}/Discord/mounted/Shared:/home/user/Shared
@@ -108,7 +108,7 @@ images:
     source: "external","tar"
     dockerfile: 
       path: ${PWD}/Firefox/Dockerfile
-      base: ubuntu:impish
+      base: "ubuntu:latest"
     mounted:
       - ${PWD}/Firefox/mounted/configs:/home/user/.config/mozilla
       - ${PWD}/Firefox/mounted/Shared:/home/user/Shared
@@ -135,7 +135,7 @@ images:
     source: "external","tar"
     dockerfile: 
       path: ${PWD}/Tor/Dockerfile
-      base: ubuntu:impish
+      base: "ubuntu:latest"
     mounted:
       - ${PWD}/Tor/mounted/configs:/home/user/tor/TorBrowser/Data/Browser
       - ${PWD}/Tor/mounted/Shared:/home/user/Shared:rw
@@ -159,7 +159,7 @@ images:
     source: "AppImage"
     dockerfile: 
       path: ${PWD}/LibreWolf/Dockerfile
-      base: ubuntu:impish
+      base: "ubuntu:latest"
     mounted:
       - ${PWD}/LibreWolf/mounted/configs:/home/user/.librewolf
       - ${PWD}/LibreWolf/mounted/Shared:/home/user/Shared
@@ -187,7 +187,7 @@ images:
     source: "external","tar","github"
     dockerfile: 
       path: ${PWD}/Telegram/Dockerfile
-      base: ubuntu:impish
+      base: "ubuntu:latest"
     mounted:
       - ${PWD}/Telegram/mounted/configs:/home/user/.local/share/TelegramDesktop
       - ${PWD}/Telegram/mounted/Shared:/home/user/Shared
@@ -213,7 +213,7 @@ images:
     source: "external","tar"
     dockerfile: 
       path: ${PWD}/Monero/Dockerfile
-      base: ubuntu:impish
+      base: "ubuntu:latest"
     mounted:
       - ${PWD}/Monero/mounted/configs:/home/user/.config/monero-project
       - ${PWD}/Monero/mounted/lmdb:/home/user/lmdb
@@ -238,7 +238,7 @@ images:
     source: "external"
     dockerfile: 
       path: ${PWD}/WinBox/Dockerfile
-      base: ubuntu:impish
+      base: "ubuntu:latest"
     mounted:
       - ${PWD}/WinBox/mounted/configs:/home/user/.wine
     commands:
@@ -259,7 +259,7 @@ images:
     source: "pip"
     dockerfile: 
       path: ${PWD}/Tidal-dl/Dockerfile
-      base: python:slim-buster
+      base: "python:slim-buster"
     mounted:
       - ${PWD}/Tidal-dl/mounted/Shared:/home/user/download \
 	    - ${PWD}/Tidal-dl/mounted/configs/.tidal-dl.json:/home/user/.tidal-dl.json \
