@@ -4,7 +4,7 @@ RUN apk update \
     && apk add curl \
     && curl -J -L "https://onboardcloud.dl.sourceforge.net/project/qbittorrent/qbittorrent-appimage/qbittorrent-${version}/qbittorrent-${version}_x86_64.AppImage" -o /tmp/qbittorrent
 
-FROM ubuntu:impish
+FROM ubuntu:latest
 ARG UID=1000
 ARG GID=1000
 
