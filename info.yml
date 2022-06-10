@@ -266,7 +266,7 @@ images:
 	    - ${PWD}/Tidal-dl/mounted/configs/.tidal-dl.token.json:/home/user/.tidal-dl.token.json
     commands:
       build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-tidal-dl -f ${PWD}/Tidal-dl/Dockerfile .`
-      run : `docker run --rm -it \
+      run : `docker run --rm \
               --name x-tidal-dl \
 	            -v ${PWD}/Tidal-dl/mounted/Shared:/home/user/download:rw \
 	            -v ${PWD}/Tidal-dl/mounted/configs/.tidal-dl.json:/home/user/.tidal-dl.json \
@@ -274,3 +274,30 @@ images:
               peterzam/x-tidal-dl
               `
     remark: "create blank .tidal-dl.json and .tidal-dl.token.json files before first run"
+
+  minecraft:
+    version: "1.19"
+    auto_update: true
+    website: "https://www.minecraft.net/en-us/download/"
+    source: "external"
+    dockerfile: 
+      path: ${PWD}/Minecraft/Dockerfile
+      base: "ubuntu:latest"
+    mounted:
+      - ${PWD}/Minecraft/mounted/pki:/home/user/.pki
+	    - ${PWD}/Minecraft/mounted/minecraft:/home/user/.minecraft
+	    - ${PWD}/Minecraft/mounted/config:/home/user/.config
+    commands:
+      build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-minecraft -f ${PWD}/Minecraft/Dockerfile .`
+      run : `docker run --rm \
+	            --name x-minecraft \
+	            -e DISPLAY \
+	            -v ${XAUTHORITY}:/home/user/.Xauthority:ro \
+	            -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+	            -v /run/user/1000/pulse:/run/user/1000/pulse:rw \
+	            -v ${PWD}/Minecraft/mounted/pki:/home/user/.pki:rw \
+	            -v ${PWD}/Minecraft/mounted/minecraft:/home/user/.minecraft:rw \
+	            -v ${PWD}/Minecraft/mounted/config:/home/user/.config:rw \
+	            --device=/dev/dri:/dev/dri \
+	            peterzam/x-minecraft
+              `
