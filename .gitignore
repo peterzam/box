@@ -1,5 +1,3 @@
-note.txt
 Makefile
-tmp/
+tmp
 **/mounted
-.vscode
