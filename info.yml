@@ -261,9 +261,9 @@ images:
       path: ${PWD}/Tidal-dl/Dockerfile
       base: "python:slim-buster"
     mounted:
-      - ${PWD}/Tidal-dl/mounted/Shared:/home/user/download \
-	    - ${PWD}/Tidal-dl/mounted/configs/.tidal-dl.json:/home/user/.tidal-dl.json \
-	    - ${PWD}/Tidal-dl/mounted/configs/.tidal-dl.token.json:/home/user/.tidal-dl.token.json \
+      - ${PWD}/Tidal-dl/mounted/Shared:/home/user/download
+	    - ${PWD}/Tidal-dl/mounted/configs/.tidal-dl.json:/home/user/.tidal-dl.json
+	    - ${PWD}/Tidal-dl/mounted/configs/.tidal-dl.token.json:/home/user/.tidal-dl.token.json
     commands:
       build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-tidal-dl -f ${PWD}/Tidal-dl/Dockerfile .`
       run : `docker run --rm -it \
