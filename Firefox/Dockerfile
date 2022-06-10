@@ -6,7 +6,7 @@ RUN apk update \
     && tar xvf firefox-*
 
 
-FROM ubuntu:impish
+FROM ubuntu:latest
 ARG UID=1000
 ARG GID=1000
 
