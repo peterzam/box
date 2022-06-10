@@ -5,7 +5,7 @@ RUN apk update \
     && tar xvf linux64 
 
 
-FROM ubuntu:impish
+FROM ubuntu:latest
 ARG UID=1000
 ARG GID=1000
 ENV TZ=Europe/London
