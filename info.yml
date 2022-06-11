@@ -249,6 +249,7 @@ images:
                -v ${XAUTHORITY}:/home/user/.Xauthority:ro \
                -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
                -v ${PWD}/WinBox/mounted/configs:/home/user/.wine:rw \
+               --device=/dev/dri \
                peterzam/x-winbox
               `
 
