@@ -13,6 +13,7 @@ COPY --from=downloader --chown=user:user /Minecraft.deb /Minecraft.deb
 RUN apt install -yq  --no-install-recommends \
     default-jre \
     libasound2 \
+    libpulse0 \
     libatk-bridge2.0-0 \
     libatk1.0-0 \
     libatspi2.0-0 \
@@ -46,8 +47,10 @@ RUN apt install -yq  --no-install-recommends \
     libxcb1 \
     libsecret-1-0 \
     xdg-utils \
+    gnome-keyring \
+    dbus-x11 \
     wget \
-    curl \
+    libcurl4 \
     && dpkg -i /Minecraft.deb && rm /Minecraft.deb \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
@@ -59,4 +62,4 @@ RUN echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndae
 
 USER user
 WORKDIR /home/user
-ENTRYPOINT [ "minecraft-launcher" ]
+ENTRYPOINT [ "/bin/bash","-c","eval $(printf 'a' | gnome-keyring-daemon --replace --unlock) && minecraft-launcher" ]
