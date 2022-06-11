@@ -24,6 +24,8 @@ RUN apt install -yq --no-install-recommends \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
     && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
 
+RUN echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
+
 USER user
 WORKDIR /home/user
 ENTRYPOINT [ "/home/user/Telegram/Telegram" ]

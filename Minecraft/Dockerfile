@@ -48,12 +48,14 @@ RUN apt install -yq  --no-install-recommends \
     xdg-utils \
     wget \
     curl \
-    && dpkg -i /Minecraft.deb \
+    && dpkg -i /Minecraft.deb && rm /Minecraft.deb \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
     && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+
+RUN echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
 
 USER user
 WORKDIR /home/user
