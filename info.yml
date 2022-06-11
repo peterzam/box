@@ -95,7 +95,7 @@ images:
               -v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
               -v ${PWD}/Discord/mounted/configs:/home/user/.config/discord:rw \
               -v ${PWD}/Discord/mounted/Shared:/home/user/Shared:rw \
-              --device=/dev/dri:/dev/dri \
+              --device=/dev/dri \
               --security-opt seccomp=${PWD}/rules.json \
               --shm-size 2g \
               peterzam/x-discord
@@ -175,7 +175,7 @@ images:
               -v ${HOME}/.local/share/fonts:/home/user/.local/share/fonts:ro \
               -v ${PWD}/LibreWolf/mounted/configs:/home/user/.librewolf:rw \
               -v ${PWD}/LibreWolf/mounted/Shared:/home/user/Shared:rw \
-              --device=/dev/dri:/dev/dri \
+              --device=/dev/dri \
               peterzam/x-librewolf
               `
     remark: "add `-safe-mode` at the end to start with disabled add-ons mode"
@@ -298,6 +298,6 @@ images:
 	            -v ${PWD}/Minecraft/mounted/pki:/home/user/.pki:rw \
 	            -v ${PWD}/Minecraft/mounted/minecraft:/home/user/.minecraft:rw \
 	            -v ${PWD}/Minecraft/mounted/config:/home/user/.config:rw \
-	            --device=/dev/dri:/dev/dri \
+	            --device=/dev/dri \
 	            peterzam/x-minecraft
               `
