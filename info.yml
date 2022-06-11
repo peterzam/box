@@ -301,3 +301,33 @@ images:
 	            --device=/dev/dri \
 	            peterzam/x-minecraft
               `
+
+  zoom:
+    version: "5.10.7"
+    auto_update: true
+    website: "https://zoom.us/download"
+    source: "external"
+    dockerfile: 
+      path: ${PWD}/Zoom/Dockerfile
+      base: "ubuntu:impish"
+    mounted:
+      - ${PWD}/Zoom/mounted/Shared:/home/user/Shared
+      - ${PWD}/Zoom/mounted/configs/zoom:/home/user/.zoom
+      - ${PWD}/Zoom/mounted/configs/zoomus.conf:/home/user/.config/zoomus.conf
+    commands:
+      build : `	DOCKER_BUILDKIT=1 docker build -t peterzam/x-zoom -f  ${PWD}/Zoom/Dockerfile .`
+      run : `docker run --rm \
+	            --name x-zoom \
+	            -e DISPLAY \
+	            -v ${XAUTHORITY}:/home/user/.Xauthority:ro \
+	            -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+	            -v /run/user/1000/pulse:/run/user/1000/pulse:rw \
+	            -v ${PWD}/Zoom/mounted/Shared:/home/user/Shared:rw \
+	            -v ${PWD}/Zoom/mounted/configs/zoom:/home/user/.zoom:rw \
+	            -v ${PWD}/Zoom/mounted/configs/zoomus.conf:/home/user/.config/zoomus.conf:rw \
+	            --device=/dev/dri \
+	            --security-opt seccomp=${PWD}/rules.json \
+	            peterzam/x-zoom
+              `
+    remark: "create blank folders and zoomus.conf before first run"
+
