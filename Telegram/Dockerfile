@@ -19,6 +19,7 @@ RUN apt install -yq --no-install-recommends \
     libfontconfig1 \
     libegl1 \
     libgl1 \
+    libpulse0 \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
