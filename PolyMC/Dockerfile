@@ -1,0 +1,62 @@
+FROM alpine:latest as downloader
+RUN apk update \
+    && apk add curl \
+    && curl -JL $(curl -s https://api.github.com/repos/PolyMC/PolyMC/releases/latest | grep -E ".*url.*AppImage" | cut -d '"' -f4 ) -o polymc.AppImage
+
+FROM openjdk:8-slim
+ARG UID=1000
+ARG GID=1000
+
+RUN apt-get update && groupadd -g ${GID} -r user && useradd -u ${UID} -s /bin/bash -r -G audio,video -g ${GID} -m user
+COPY --from=downloader --chown=user:user --chmod=0700 /polymc.AppImage /home/user/
+
+RUN apt install -yq --no-install-recommends \
+    libqt5core5a \
+    libqt5network5 \
+    libqt5gui5 \
+    libqt5xml5 \
+    libqt5widgets5 \
+    libasound2 \
+    libpulse0 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libatspi2.0-0 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libdrm2 \
+    libexpat1 \
+    libgbm1 \
+    libfontconfig1 \
+    libgdk-pixbuf2.0-0 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libpango1.0-0 \
+    libpangocairo-1.0-0 \
+    libx11-6 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxi6 \
+    libxrandr2 \
+    libxrender1 \
+    libxss1 \
+    libxtst6 \
+    libx11-xcb1 \
+    libxcb-dri3-0 \
+    libxcb1 \
+    x11-xserver-utils \
+    wget \
+    && fc-cache -fv \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt autoclean && apt autoremove --purge \
+    && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+
+USER user
+WORKDIR /home/user
+ENTRYPOINT [ "/home/user/polymc.AppImage","--appimage-extract-and-run" ]
