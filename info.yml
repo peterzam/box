@@ -153,10 +153,10 @@ images:
     remark: "config file path is not actually the default tor's profile path"
 
   librewolf:
-    version: "99.0.1-1"
+    version: "101.0.1-1"
     auto_update: true
     website: "https://librewolf.net/installation/linux/"
-    source: "AppImage"
+    source: "apt"
     dockerfile: 
       path: ${PWD}/LibreWolf/Dockerfile
       base: "ubuntu:latest"
