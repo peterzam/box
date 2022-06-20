@@ -356,3 +356,30 @@ images:
 	            --device=/dev/dri \
 	            peterzam/x-polymc
               `
+
+  obs:
+    version: "27.2.4"
+    auto_update: true
+    website: "https://obsproject.com/download"
+    source: "ppa","apt"
+    dockerfile: 
+      path: ${PWD}/OBS/Dockerfile
+      base: "ubuntu:latest"
+    mounted:
+	    - ${PWD}/OBS/mounted/Shared:/home/user/Shared:rw \
+	    - ${PWD}/OBS/mounted/configs:/home/user/.config/obs-studio:rw \
+    commands:
+      build : `DOCKER_BUILDKIT=1 docker build -t peterzam/x-obs -f  ${PWD}/OBS/Dockerfile .`
+      run : `docker run --rm \
+	            --name x-obs \
+	            -e DISPLAY \
+	            -v ${XAUTHORITY}:/home/user/.Xauthority:ro \
+	            -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+	            -v /run/user/1000/pulse:/run/user/1000/pulse:rw \
+	            -v ${PWD}/OBS/mounted/Shared:/home/user/Shared:rw \
+	            -v ${PWD}/OBS/mounted/configs:/home/user/.config/obs-studio:rw \
+	            --device=/dev/dri \
+	            peterzam/x-obs
+              `
+
+
