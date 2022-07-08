@@ -3,7 +3,7 @@ RUN apk update \
     && apk add curl \
     && curl -JL $(curl -s https://api.github.com/repos/PolyMC/PolyMC/releases/latest | grep -E ".*url.*AppImage" | cut -d '"' -f4 ) -o polymc.AppImage
 
-FROM openjdk:8-slim
+FROM docker.io/library/openjdk:8-slim
 ARG UID=1000
 ARG GID=1000
 
