@@ -1,4 +1,4 @@
-FROM python:slim-buster
+FROM docker.io/library/python:slim-buster
 ARG UID=1000
 ARG GID=1000
 
