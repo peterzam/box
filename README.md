@@ -1,4 +1,9 @@
 # xDocker
+
+#⚠️ Deprecation Notice ⚠️
+## NO LONGER MAINTAINING XDOCKER PROJECT FOR SECURITY REASONS. PLEASE USE THE FORK [XCONATINER](https://codeberg.org/peterzam/xcontainer.git).
+
+---
 Docker with X Server. Actually, containerised my daily "Linux" softwares. 
 ## *!!! Use this only if you fully understand what you are doing. This is a personal project. Don't use it in real-time deployment !!!*
 Why did I write this?
