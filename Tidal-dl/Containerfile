@@ -1,10 +1,8 @@
-FROM docker.io/library/python:slim-buster
-ARG UID=1000
-ARG GID=1000
+FROM python:alpine
 
 RUN pip3 install tidal-dl --upgrade
 
-RUN groupadd -g ${GID} -r user && useradd -u ${UID} -s /bin/bash -r -G audio,video -g ${GID} -m user
+RUN addgroup -g 1000 -S user && adduser -u 1000 -s /bin/sh -S -h /home/user -G user user
 
 USER user
 

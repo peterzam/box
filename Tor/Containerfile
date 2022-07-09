@@ -1,31 +1,38 @@
 FROM alpine:latest as downloader
-ARG version=11.0.13
-RUN apk update \
-    && apk add curl \
-    && curl -J -L -O "https://dist.torproject.org/torbrowser/${version}/tor-browser-linux64-${version}_en-US.tar.xz" \
+ARG version=11.0.15
+RUN apk update && apk add curl
+RUN curl -J -L -O "https://dist.torproject.org/torbrowser/${version}/tor-browser-linux64-${version}_en-US.tar.xz" \
     && tar xvf tor-browser-linux64-*
 
+
 FROM ubuntu:latest
-ARG UID=1000
-ARG GID=1000
-ENV TZ=Europe/London
-RUN apt-get update && groupadd -g ${GID} -r user && useradd -u ${UID} -s /bin/bash -r -G audio,video -g ${GID} -m user
-RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -y tzdata keyboard-configuration --no-install-recommends
-COPY --from=downloader --chown=user:user /tor-browser_en-US/ /home/user/tor
-RUN apt install -yq --no-install-recommends \
-    libx11-xcb-dev \
-    libxt6 \ 
-    libgtk-3-0 \
-    libdbus-glib-1-2 \
-    file \
-    libpulse0 \
-    libavcodec-dev \
+
+RUN groupadd -g 1000 -r user \
+    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user \
+    && apt update
+
+RUN apt install -yq --no-install-recommends libpulse0 \
+    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
+
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-install-recommends \
+        tzdata \
+        keyboard-configuration \
+        libx11-xcb-dev \
+        libxt6 \
+        libgtk-3-0 \
+        libdbus-glib-1-2 \
+        file \
+        libavcodec-dev \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
     && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
 
+COPY --from=downloader --chown=user:user /tor-browser_en-US/ /home/user/tor
+
 USER user
+
 WORKDIR /home/user
-ENTRYPOINT [ "/home/user/tor/Browser/start-tor-browser", "-v" ]
+
+ENTRYPOINT [ "/home/user/tor/Browser/start-tor-browser" ]

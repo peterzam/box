@@ -1,23 +1,26 @@
-FROM alpine:latest as downloader
-ARG version=4.4.2
-RUN apk update \
-    && apk add curl \
-    && curl -J -L "https://onboardcloud.dl.sourceforge.net/project/qbittorrent/qbittorrent-appimage/qbittorrent-${version}/qbittorrent-${version}_x86_64.AppImage" -o /tmp/qbittorrent
-
 FROM ubuntu:latest
-ARG UID=1000
-ARG GID=1000
 
-RUN apt-get update && groupadd -g ${GID} -r user && useradd -u ${UID} -s /bin/bash -r -G audio,video -g ${GID} -m user
+RUN groupadd -g 1000 -r user \
+    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user \
+    && apt update
 
-RUN apt install qt5dxcb-plugin -yq --no-install-recommends \
-        && fc-cache -fv \
-        && rm -rf /var/lib/apt/lists/* \
-        && apt autoclean && apt autoremove --purge \
-        && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
-        && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-install-recommends \
+        tzdata \
+        keyboard-configuration \
+        software-properties-common \
+        gpg-agent \
+        qt5dxcb-plugin \
+    && add-apt-repository -y ppa:qbittorrent-team/qbittorrent-stable \
+    && apt update \
+    && apt install -yq --no-install-recommends qbittorrent \
+    && fc-cache -fv \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt autoclean && apt autoremove --purge \
+    && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
 
 USER user
+
 WORKDIR /home/user
-COPY --from=downloader --chmod=0744 --chown=${UID}:${GID} /tmp/qbittorrent ./qbittorrent
-ENTRYPOINT [ "/home/user/qbittorrent","--appimage-extract-and-run" ]
+
+ENTRYPOINT [ "qbittorrent" ]
