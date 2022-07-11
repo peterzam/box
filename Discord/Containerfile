@@ -34,6 +34,7 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-ins
         libx11-xcb1 \
         xdg-utils \
         libatomic1 \
+        wget \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge \
