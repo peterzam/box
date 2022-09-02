@@ -1,5 +1,5 @@
 FROM alpine:latest as downloader
-RUN apk update && apk add curl
+RUN apk add curl
 RUN curl -fSL "https://discord.com/api/download?platform=linux&format=tar.gz" -o discord.tar.gz \
     && tar xzvf discord.tar.gz
 
@@ -35,6 +35,7 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-ins
         xdg-utils \
         libatomic1 \
         wget \
+        ca-certificates \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge \
