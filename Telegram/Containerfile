@@ -1,5 +1,5 @@
 FROM alpine:latest as downloader
-RUN apk update && apk add curl
+RUN apk add curl
 RUN curl -JLO $(curl -s https://api.github.com/repos/telegramdesktop/tdesktop/releases/latest | grep -E ".*url.*tar.xz" | cut -d '"' -f4) \
     && tar xvf tsetup.* && rm Telegram/Updater
 

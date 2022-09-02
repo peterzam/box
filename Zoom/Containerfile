@@ -1,5 +1,5 @@
 FROM alpine:latest as downloader
-RUN apk update && apk add curl
+RUN apk add curl
 RUN curl -J -L -O https://zoom.us/client/latest/zoom_amd64.deb
 
 

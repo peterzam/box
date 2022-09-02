@@ -1,5 +1,5 @@
 FROM alpine:latest as downloader
-RUN apk update && apk add curl
+RUN apk add curl
 RUN curl -JL https://mt.lv/winbox64 -o winbox.exe
 
 

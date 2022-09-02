@@ -1,5 +1,5 @@
 FROM alpine:latest as downloader
-RUN apk update && apk add curl
+RUN apk add curl
 RUN version=$(curl -s https://product-details.mozilla.org/1.0/firefox_versions.json  | grep LATEST_FIREFOX_VERSION | cut -d '"' -f4) \
     && curl -J -L -O https://download-installer.cdn.mozilla.net/pub/firefox/releases/$version/linux-x86_64/en-US/firefox-$version.tar.bz2 \
     && tar xvf firefox-*
