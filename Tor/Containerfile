@@ -1,7 +1,7 @@
 FROM alpine:latest as downloader
-ARG version=11.0.15
-RUN apk update && apk add curl
-RUN curl -J -L -O "https://dist.torproject.org/torbrowser/${version}/tor-browser-linux64-${version}_en-US.tar.xz" \
+ARG version=11.5.2
+RUN apk add curl
+RUN curl -J -L -O www.torproject.org/$(curl https://www.torproject.org/download/ | grep 'class="downloadLink"' | sed -r 's/^.+class="downloadLink"\s+href="([^"]+)".+$/\1/' | tail -1) \
     && tar xvf tor-browser-linux64-*
 
 
