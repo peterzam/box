@@ -1,9 +1,3 @@
-FROM alpine:latest as downloader
-RUN apk add curl
-RUN curl -JLO $(curl -s https://api.github.com/repos/telegramdesktop/tdesktop/releases/latest | grep -E ".*url.*tar.xz" | cut -d '"' -f4) \
-    && tar xvf tsetup.* && rm Telegram/Updater
-
-
 FROM ubuntu:latest
 
 RUN groupadd -g 1000 -r user \
@@ -16,19 +10,28 @@ RUN apt install -yq --no-install-recommends libpulse0 \
 RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-install-recommends \
         tzdata \
         keyboard-configuration \
-        libglib2.0-dev \
-        libfontconfig1 \
-        libegl1 \
+        libgtk-3-0 \
+        libxtst6 \
+        libdbus-glib-1-2 \
+        libasound2 \
+        libavcodec58 \
         libgl1 \
+        wget \
+        gnupg \
+        ca-certificates \
+    && distro=$(if echo " bullseye focal impish jammy uma una " | grep -q " $(lsb_release -sc) "; then echo $(lsb_release -sc); else echo focal; fi) \
+    && echo "deb [arch=amd64] http://deb.librewolf.net $distro main" | tee /etc/apt/sources.list.d/librewolf.list \
+    && wget https://deb.librewolf.net/keyring.gpg -O /etc/apt/trusted.gpg.d/librewolf.gpg \
+    && apt update \
+    && apt install librewolf -yq --no-install-recommends \
+    && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
     && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
 
-COPY --from=downloader --chown=user:user /Telegram /home/user/Telegram
-
 USER user
 
 WORKDIR /home/user
 
-ENTRYPOINT [ "/home/user/Telegram/Telegram" ]
+ENTRYPOINT [ "librewolf" ]

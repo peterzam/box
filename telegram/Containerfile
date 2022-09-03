@@ -1,3 +1,9 @@
+FROM alpine:latest as downloader
+RUN apk add curl
+RUN curl -JLO $(curl -s https://api.github.com/repos/telegramdesktop/tdesktop/releases/latest | grep -E ".*url.*tar.xz" | cut -d '"' -f4) \
+    && tar xvf tsetup.* && rm Telegram/Updater
+
+
 FROM ubuntu:latest
 
 RUN groupadd -g 1000 -r user \
@@ -7,24 +13,22 @@ RUN groupadd -g 1000 -r user \
 RUN apt install -yq --no-install-recommends libpulse0 \
     && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
 
-RUN apt install -yq --no-install-recommends \
-        wget \
-        ca-certificates \
-        gnupg \
-        libgbm-dev \
-        libasound2 \
-    && wget -O /usr/share/keyrings/element-io-archive-keyring.gpg https://packages.element.io/debian/element-io-archive-keyring.gpg \
-    && echo "deb [signed-by=/usr/share/keyrings/element-io-archive-keyring.gpg] https://packages.element.io/debian/ default main" \
-        > /etc/apt/sources.list.d/element-io.list \
-    && apt update && apt install element-desktop -yq --no-install-recommends \
-    && fc-cache -fv \
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-install-recommends \
+        tzdata \
+        keyboard-configuration \
+        libglib2.0-0 \
+        libfontconfig1 \
+        libegl1 \
+        libgl1 \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
     && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
 
+COPY --from=downloader --chown=user:user /Telegram /home/user/Telegram
+
 USER user
 
 WORKDIR /home/user
 
-ENTRYPOINT [ "element-desktop" ]
+ENTRYPOINT [ "/home/user/Telegram/Telegram" ]

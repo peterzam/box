@@ -40,7 +40,7 @@ RUN apt install -yq  --no-install-recommends \
         libxkbcommon-x11-0 \
         desktop-file-utils \
         libfreetype6 \
-        libnss3-dev \
+        libnss3 \
         libasound2 \
         ca-certificates \
     && dpkg -i /zoom_amd64.deb && rm /zoom_amd64.deb \

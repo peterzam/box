@@ -1,0 +1,30 @@
+FROM ubuntu:latest
+
+RUN groupadd -g 1000 -r user \
+    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user \
+    && apt update
+
+RUN apt install -yq --no-install-recommends libpulse0 \
+    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
+
+RUN apt install -yq --no-install-recommends \
+        wget \
+        ca-certificates \
+        gnupg \
+        libgbm1 \
+        libasound2 \
+    && wget -O /usr/share/keyrings/element-io-archive-keyring.gpg https://packages.element.io/debian/element-io-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/element-io-archive-keyring.gpg] https://packages.element.io/debian/ default main" \
+        > /etc/apt/sources.list.d/element-io.list \
+    && apt update && apt install element-desktop -yq --no-install-recommends \
+    && fc-cache -fv \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt autoclean && apt autoremove --purge \
+    && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+
+USER user
+
+WORKDIR /home/user
+
+ENTRYPOINT [ "element-desktop" ]

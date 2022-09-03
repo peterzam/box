@@ -1,8 +1,8 @@
 FROM alpine:latest as downloader
+ARG version=11.5.2
 RUN apk add curl
-RUN version=$(curl -s https://product-details.mozilla.org/1.0/firefox_versions.json  | grep LATEST_FIREFOX_VERSION | cut -d '"' -f4) \
-    && curl -J -L -O https://download-installer.cdn.mozilla.net/pub/firefox/releases/$version/linux-x86_64/en-US/firefox-$version.tar.bz2 \
-    && tar xvf firefox-*
+RUN curl -J -L -O www.torproject.org/$(curl https://www.torproject.org/download/ | grep 'class="downloadLink"' | sed -r 's/^.+class="downloadLink"\s+href="([^"]+)".+$/\1/' | tail -1) \
+    && tar xvf tor-browser-linux64-*
 
 
 FROM ubuntu:latest
@@ -14,25 +14,25 @@ RUN groupadd -g 1000 -r user \
 RUN apt install -yq --no-install-recommends libpulse0 \
     && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
 
-COPY --from=downloader --chown=user:user /firefox /home/user/firefox
-
 RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-install-recommends \
         tzdata \
         keyboard-configuration \
+        libx11-xcb1 \
+        libxt6 \
         libgtk-3-0 \
-        libxtst6 \
         libdbus-glib-1-2 \
-        libasound2 \
-        libavcodec-dev \
-        libgl1 \
+        file \
+        libavcodec58 \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
     && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
 
+COPY --from=downloader --chown=user:user /tor-browser_en-US/ /home/user/tor
+
 USER user
 
 WORKDIR /home/user
 
-ENTRYPOINT [ "/home/user/firefox/firefox" ]
+ENTRYPOINT [ "/home/user/tor/Browser/start-tor-browser" ]
