@@ -1,0 +1,30 @@
+FROM alpine:latest as downloader
+RUN apk add curl
+RUN curl -J -L -O https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
+
+
+FROM ubuntu:latest
+
+RUN groupadd -g 1000 -r user \
+    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user \
+    && apt update
+
+RUN apt install -yq --no-install-recommends libpulse0 \
+    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
+
+COPY --from=downloader --chown=user:user /dbeaver-ce* /dbeaver.deb
+
+RUN apt install -yq  --no-install-recommends \
+        libswt-gtk-4-jni \
+    && dpkg -i /dbeaver.deb && rm /dbeaver.deb \
+    && fc-cache -fv \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt autoclean && apt autoremove --purge \
+    && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+
+USER user
+
+WORKDIR /home/user
+
+ENTRYPOINT [ "dbeaver" ]
