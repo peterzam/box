@@ -22,6 +22,6 @@ elif [ "$1" = "import-all" ] ; then
         ${BUILDER} import $2/$f peterzam/x-$f
     done
 else
-    ${BUILDER} build -t peterzam/x-$1 -f ./$1/Containerfile .
+    ${BUILDER} build -t peterzam/x-$1 --no-cache -f ./$1/Containerfile .
 fi
 

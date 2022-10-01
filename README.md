@@ -5,10 +5,11 @@ My daily "GNU/Linux" softwares in container using podman.
 
 ---
 
-## Why?
+## Why and how?
 
 [Wiki](https://codeberg.org/peterzam/xcontainer/wiki)  
 [Blogs]() ***comming soon***
+Check out [Makefile](https://codeberg.org/peterzam/xcontainer/src/branch/main/Makefile) for examples.
 
 ---
 
