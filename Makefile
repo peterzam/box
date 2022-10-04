@@ -176,22 +176,6 @@ x-tor:
 	peterzam/x-tor
 
 
-# Viber
-x-viber:
-	podman run --rm \
-	--name=x-viber \
-	--userns=keep-id \
-	--device=/dev/dri \
-	-e DISPLAY \
-	-v /tmp/.X11-unix:/tmp/.X11-unix \
-	-v /run/user/1000/pulse:/run/user/1000/pulse \
-	-v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
-	-v ${HOME}/.local/share/fonts:/home/user/.local/share/fonts:ro \
-	-v ${XPATH}/configs/viber:/home/user/.ViberPC \
-	-v ${XPATH}/shared/viber:/home/user/Documents/ViberDownloads \
-	peterzam/x-viber
-
-
 # Winbox
 x-winbox:
 	podman run --rm \
