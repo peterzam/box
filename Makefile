@@ -17,6 +17,21 @@ x-brave:
 	peterzam/x-brave
 
 
+# DBeaver
+x-dbeaver:	
+	podman run --rm \
+	--name=x-dbeaver \
+	--userns=keep-id \
+	--device=/dev/dri \
+	-e DISPLAY \
+	-v /tmp/.X11-unix:/tmp/.X11-unix \
+	-v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
+	-v ${HOME}/.local/share/fonts:/home/user/.local/share/fonts:ro \
+	-v ${XPATH}/configs/dbeaver:/home/user/.local/share/DBeaverData \
+	-v ${XPATH}/shared/dbeaver:/home/user/Shared \
+	peterzam/x-dbeaver
+
+
 # Discord
 x-discord:	
 	podman run --rm \
@@ -32,19 +47,6 @@ x-discord:
 	-v ${XPATH}/shared/discord:/home/user/Shared \
 	peterzam/x-discord
 
-# DBeaver
-x-dbeaver:	
-	podman run --rm \
-	--name=x-dbeaver \
-	--userns=keep-id \
-	--device=/dev/dri \
-	-e DISPLAY \
-	-v /tmp/.X11-unix:/tmp/.X11-unix \
-	-v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
-	-v ${HOME}/.local/share/fonts:/home/user/.local/share/fonts:ro \
-	-v ${XPATH}/configs/dbeaver:/home/user/.local/share/DBeaverData \
-	-v ${XPATH}/shared/dbeaver:/home/user/Shared \
-	peterzam/x-dbeaver
 
 # Element
 x-element:
@@ -77,6 +79,7 @@ x-firefox:
 	-v ${XPATH}/shared/firefox:/home/user/Shared \
 	peterzam/x-firefox
 
+
 # Librewolf
 x-librewolf:
 	podman run --rm \
@@ -92,19 +95,6 @@ x-librewolf:
 	-v ${XPATH}/configs/librewolf:/home/user/.librewolf \
 	-v ${XPATH}/shared/librewolf:/home/user/Shared \
 	peterzam/x-librewolf
-
-# PolyMC
-x-polymc:
-	podman run --rm -it \
-	--name=x-polymc \
-	--userns=keep-id \
-	--device=/dev/dri \
-	-e DISPLAY \
-	-v /tmp/.X11-unix:/tmp/.X11-unix \
-	-v /run/user/1000/pulse:/run/user/1000/pulse \
-	-v ${XPATH}/configs/polymc:/home/user/.local/share/PolyMC \
-	-v ${XPATH}/shared/polymc:/home/user/Shared \
-	peterzam/x-polymc
 
 
 # Monero
@@ -132,6 +122,20 @@ x-obs:
 	-v ${XPATH}/configs/obs:/home/user/.config/obs-studio \
 	-v ${XPATH}/shared/obs:/home/user/Shared \
 	peterzam/x-obs
+
+
+# Prismlaucher
+x-prismlauncher:
+	podman run --rm -it \
+	--name=x-prismlauncher \
+	--userns=keep-id \
+	--device=/dev/dri \
+	-e DISPLAY \
+	-v /tmp/.X11-unix:/tmp/.X11-unix \
+	-v /run/user/1000/pulse:/run/user/1000/pulse \
+	-v ${XPATH}/configs/prismlauncher:/home/user/.local/share/PrismLauncher \
+	-v ${XPATH}/shared/prismlauncher:/home/user/Shared \
+	peterzam/x-prismlauncher
 
 
 # Qbittorrent
@@ -202,19 +206,6 @@ x-zoom:
 	-v ${XPATH}/configs/zoom/zoomus.conf:/home/user/.config/zoomus.conf \
 	-v ${XPATH}/shared/zoom:/home/user/Shared \
 	peterzam/x-zoom
-
-
-# Jenkins
-x-jenkins:
-	podman run --rm -d \
-	--name=x-jenkins \
-	-v ${PWD}/Jenkins/mounted/Shared:/home/jenkins_home/Shared \
-	-v ${PWD}/Jenkins/mounted/configs:/var/jenkins_home \
-	-p 8080:8080 \
-	-p 50000:50000 \
-	--userns=keep-id \
-	--cgroup-conf=memory.high=4294967296 \
-	jenkins/jenkins
 
 
 ## For Yubikey, add this line
