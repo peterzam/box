@@ -213,3 +213,8 @@ x-zoom:
 
 ## Further reading
 # https://stackoverflow.com/questions/24225647/docker-a-way-to-give-access-to-a-host-usb-or-serial-device
+
+# to use wayland - https://unix.stackexchange.com/questions/330366/how-can-i-run-a-graphical-application-in-a-container-under-wayland
+# -e XDG_RUNTIME_DIR=/tmp \
+# -e WAYLAND_DISPLAY=${WAYLAND_DISPLAY} \
+# -v ${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}:/tmp/${WAYLAND_DISPLAY}  \
