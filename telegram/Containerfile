@@ -20,6 +20,7 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-ins
         libfontconfig1 \
         libegl1 \
         libgl1 \
+        qtwayland5 \ 
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
