@@ -10,6 +10,7 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-ins
         software-properties-common \
         gpg-agent \
         qt5dxcb-plugin \
+        qtwayland5 \ 
     && add-apt-repository -y ppa:qbittorrent-team/qbittorrent-stable \
     && apt update \
     && apt install -yq --no-install-recommends qbittorrent \
@@ -24,3 +25,5 @@ USER user
 WORKDIR /home/user
 
 ENTRYPOINT [ "qbittorrent" ]
+
+# qtwayland5 package for wayland support

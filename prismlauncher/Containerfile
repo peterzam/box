@@ -14,6 +14,7 @@ RUN apt install -yq --no-install-recommends libpulse0 \
     && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
 
 RUN apt install -yq --no-install-recommends \
+        qtwayland5 \ 
         openjdk-8-jdk \
         libqt5core5a \
         libqt5network5 \

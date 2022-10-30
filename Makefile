@@ -218,3 +218,7 @@ x-zoom:
 # -e XDG_RUNTIME_DIR=/tmp \
 # -e WAYLAND_DISPLAY=${WAYLAND_DISPLAY} \
 # -v ${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}:/tmp/${WAYLAND_DISPLAY}  \
+
+# For mozilla - 	-e MOZ_ENABLE_WAYLAND=1 \
+# For chromium - --enable-features=UseOzonePlatform --ozone-platform=wayland - https://www.reddit.com/r/Fedora/comments/rkzp78/make_chrome_run_on_wayland_permanently
+# For QT - -e QT_QPA_PLATFORM=wayland
