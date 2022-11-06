@@ -12,7 +12,7 @@ x-brave:
 	-v /usr/share/fonts/truetype/:/usr/share/fonts/truetype:ro \
 	-v ${HOME}/.local/share/fonts:/home/user/.local/share/fonts:ro \
 	-v ${XPATH}/configs/brave:/home/user/.config/BraveSoftware \
-	-v ${XPATH}/shared/brave:/home/user/Shared \	-v /mnt/wd0/Misc/Monero/lmdb:/home/user/lmdb \
+	-v ${XPATH}/shared/brave:/home/user/Shared \
 	--shm-size 2g \
 	peterzam/x-brave
 
