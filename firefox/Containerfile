@@ -17,7 +17,6 @@ RUN apt install -yq --no-install-recommends libpulse0 \
 COPY --from=downloader --chown=user:user /firefox /home/user/firefox
 
 RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-install-recommends \
-        tzdata \
         keyboard-configuration \
         libgtk-3-0 \
         libxtst6 \

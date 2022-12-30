@@ -5,7 +5,6 @@ RUN groupadd -g 1000 -r user \
     && apt update
 
 RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-install-recommends \
-        tzdata \
         keyboard-configuration \
         software-properties-common \
         gpg-agent \

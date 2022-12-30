@@ -8,7 +8,6 @@ RUN apt install -yq --no-install-recommends libpulse0 \
     && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
 
 RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-install-recommends \
-        tzdata \
         keyboard-configuration \
         libgtk-3-0 \
         libxtst6 \
