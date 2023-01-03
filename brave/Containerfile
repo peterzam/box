@@ -1,29 +1,23 @@
 FROM ubuntu:latest
 
 RUN groupadd -g 1000 -r user \
-    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user \
-    && apt update
+    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user
 
-RUN apt install -yq --no-install-recommends libpulse0 \
-    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
-
-RUN apt install -yq --no-install-recommends \
+RUN apt update && apt install -yq --no-install-recommends \
         ca-certificates \
         gnupg \
         libgl1 \
-    && apt-key adv --keyserver keyserver.ubuntu.com \
-        --recv-keys D8BAD4DE7EE17AF52A834B2D0BB75829C2D4E821 \
-    && echo "deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" \
-        > /etc/apt/sources.list.d/brave-browser-release.list \
-    && apt update \
-    && apt-cache policy brave-browser \
-    && apt-get install -yq --no-install-recommends \
-        brave-browser \
+        libpulse0 \
+        curl \
+    && curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|tee /etc/apt/sources.list.d/brave-browser-release.list \
+    && apt update && apt install -yq --no-install-recommends brave-browser \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
-    && apt autoclean && apt autoremove --purge \
+    && apt autoclean && apt autoremove --purge && apt clean \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
-    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \; \
+    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
 
 USER user
 

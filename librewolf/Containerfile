@@ -1,13 +1,9 @@
 FROM ubuntu:latest
 
 RUN groupadd -g 1000 -r user \
-    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user \
-    && apt update
+    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user
 
-RUN apt install -yq --no-install-recommends libpulse0 \
-    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
-
-RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-install-recommends \
+RUN apt update && apt install -yq --no-install-recommends \
         keyboard-configuration \
         libgtk-3-0 \
         libxtst6 \
@@ -18,16 +14,16 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-ins
         wget \
         gnupg \
         ca-certificates \
-    && distro=$(if echo " bullseye focal impish jammy uma una " | grep -q " $(lsb_release -sc) "; then echo $(lsb_release -sc); else echo focal; fi) \
-    && echo "deb [arch=amd64] http://deb.librewolf.net $distro main" | tee /etc/apt/sources.list.d/librewolf.list \
-    && wget https://deb.librewolf.net/keyring.gpg -O /etc/apt/trusted.gpg.d/librewolf.gpg \
-    && apt update \
-    && apt install librewolf -yq --no-install-recommends \
+        libpulse0 \
+    && distro=$(cat /etc/lsb-release | grep -i CODENAME | cut -d'=' -f2) \
+    && echo "deb [arch=amd64] http://deb.librewolf.net $distro main" | tee /etc/apt/sources.list.d/librewolf.list && wget https://deb.librewolf.net/keyring.gpg -O /etc/apt/trusted.gpg.d/librewolf.gpg \
+    && apt update && apt install librewolf -yq --no-install-recommends \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
-    && apt autoclean && apt autoremove --purge \
+    && apt autoclean && apt autoremove --purge && apt clean \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
-    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \; \
+    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
 
 USER user
 

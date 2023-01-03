@@ -8,13 +8,9 @@ RUN curl -J -L -O www.torproject.org/$(curl https://www.torproject.org/download/
 FROM ubuntu:latest
 
 RUN groupadd -g 1000 -r user \
-    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user \
-    && apt update
+    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user
 
-RUN apt install -yq --no-install-recommends libpulse0 \
-    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
-
-RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-install-recommends \
+RUN apt update && apt install -yq --no-install-recommends \
         keyboard-configuration \
         libx11-xcb1 \
         libxt6 \
@@ -22,13 +18,15 @@ RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -yq --no-ins
         libdbus-glib-1-2 \
         file \
         libavcodec58 \
+        libpulse0 \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
-    && apt autoclean && apt autoremove --purge \
+    && apt autoclean && apt autoremove --purge && apt clean \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
-    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \; \
+    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
 
-COPY --from=downloader --chown=user:user /tor-browser_en-US/ /home/user/tor
+COPY --from=downloader --chown=user:user /tor-browser/ /home/user/tor
 
 USER user
 

@@ -24,4 +24,3 @@ elif [ "$1" = "import-all" ] ; then
 else
     ${BUILDER} build -t peterzam/x-$1 --no-cache -f ./$1/Containerfile .
 fi
-

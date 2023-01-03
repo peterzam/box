@@ -6,15 +6,11 @@ RUN curl -J -L -O https://zoom.us/client/latest/zoom_amd64.deb
 FROM ubuntu:latest
 
 RUN groupadd -g 1000 -r user \
-    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user \
-    && apt update
-
-RUN apt install -yq --no-install-recommends libpulse0 \
-    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
+    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user
 
 COPY --from=downloader --chown=user:user /zoom_amd64.deb /zoom_amd64.deb
 
-RUN apt install -yq  --no-install-recommends \
+RUN apt update && apt install -yq --no-install-recommends \
         libxcb-keysyms1 \
         libglib2.0-0 \
         libxcb-shape0 \
@@ -43,12 +39,14 @@ RUN apt install -yq  --no-install-recommends \
         libnss3 \
         libasound2 \
         ca-certificates \
+        libpulse0 \
     && dpkg -i /zoom_amd64.deb && rm /zoom_amd64.deb \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
-    && apt autoclean && apt autoremove --purge \
+    && apt autoclean && apt autoremove --purge && apt clean \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
-    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \; \
+    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
 
 USER user
 
