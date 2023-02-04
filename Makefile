@@ -246,7 +246,6 @@ x-zoom:
 	-v ${XPATH}/shared/zoom:/home/user/Shared \
 	peterzam/x-zoom
 
-
 # Jenkins
 x-jenkins:
 	podman run --rm -d \
@@ -273,3 +272,7 @@ x-jenkins:
 # For QT - -e QT_QPA_PLATFORM
 
 # Experimental feature - -v ${XDG_RUNTIME_DIR}/pipewire-0:${XDG_RUNTIME_DIR}/pipewire-0 \
+
+## For proxychain
+# -v ${XDG_RUNTIME_DIR}:${XDG_RUNTIME_DIR} \
+# && echo "strict_chain\ntcp_read_time_out 15000\ntcp_connect_time_out 8000\n[ProxyList]\nsocks5 10.0.0.1 1080" > /etc/proxychains.conf
