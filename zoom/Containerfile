@@ -40,6 +40,7 @@ RUN apt update && apt install -yq --no-install-recommends \
         libasound2 \
         ca-certificates \
         libpulse0 \
+        qt5dxcb-plugin \
     && dpkg -i /zoom_amd64.deb && rm /zoom_amd64.deb \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
