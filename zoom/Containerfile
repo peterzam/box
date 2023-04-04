@@ -39,7 +39,8 @@ RUN apt update && apt install -yq --no-install-recommends \
         libnss3 \
         libasound2 \
         ca-certificates \
-        libpulse0 \
+        libxcb-cursor0 \
+		libpulse0 \
         qt5dxcb-plugin \
     && dpkg -i /zoom_amd64.deb && rm /zoom_amd64.deb \
     && fc-cache -fv \
