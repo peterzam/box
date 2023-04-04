@@ -1,0 +1,31 @@
+FROM alpine:latest as downloader
+RUN apk add curl zstd
+RUN curl -JLO $(curl -s https://api.github.com/repos/diamondburned/gtkcord4/releases | grep -E ".*url.*gtkcord4-linux-amd64.*tar.zst*" | cut -d '"' -f4 | head -1) \
+    && mkdir gtkcord4 \
+    && zstd -d --rm gtkcord4-linux-amd64* \
+    && tar xvf gtkcord4-linux-amd64* -C gtkcord4
+
+FROM ubuntu:latest
+
+RUN groupadd -g 1000 -r user \
+    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user
+
+RUN apt update && apt install -yq --no-install-recommends \
+    libadwaita-1-0 \
+    libpulse0 \
+    libgirepository-1.0-1 \
+    ca-certificates \
+    && fc-cache -fv \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt autoclean && apt autoremove --purge && apt clean \
+    && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \; \
+    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
+
+COPY --from=downloader --chown=user:user --chmod=0700 /gtkcord4/bin/gtkcord4 /usr/bin
+
+USER user
+
+WORKDIR /home/user
+
+ENTRYPOINT [ "gtkcord4" ]
