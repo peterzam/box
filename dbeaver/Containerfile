@@ -12,7 +12,7 @@ COPY --from=downloader --chown=user:user /dbeaver-ce* /dbeaver.deb
 
 RUN apt update && apt install -yq --no-install-recommends \
         libswt-gtk-4-jni \
-    && dpkg -i /dbeaver.deb && rm /dbeaver.deb \
+        /dbeaver.deb \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge && apt clean \
