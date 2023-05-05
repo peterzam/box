@@ -16,7 +16,7 @@ box=$2
 
 ### BOX PATH ###
 BOXPATH='
-/home/p/custom/box'
+/home/p/custom/box-mounts'
 
 
 ### name ###
@@ -92,7 +92,6 @@ CHROMIUM_WAYLAND='
 
 DEFAULT_DISPLAY=${DISPLAY_WAYLAND}
 
-COMMON="${NAME} ${RM} ${USERNS} ${DEFAULT_DISPLAY} ${SHARED}"
 
 while getopts 'xwh:' OPTION; do
   case "$OPTION" in
@@ -111,6 +110,7 @@ while getopts 'xwh:' OPTION; do
   esac
 done
 
+COMMON="${NAME} ${RM} ${USERNS} ${DEFAULT_DISPLAY} ${SHARED}"
 
 case ${box} in
     brave)
@@ -119,7 +119,7 @@ case ${box} in
         -v ${BOXPATH}/configs/brave:/home/user/.config/BraveSoftware \
         peterzam/box-brave ${CHROMIUM_WAYLAND}
         ;;
-    brave-incognito) 
+    brave-incognito)
         ${runner} run \
         ${COMMON} ${AUDIO_PULSE} ${FONT} ${SHM} ${CHROOT} \
         peterzam/box-brave ${CHROMIUM_WAYLAND}
