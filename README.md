@@ -8,7 +8,7 @@ My daily "GNU/Linux" softwares in container.
 ## Why and how?
 
 [Wiki](https://codeberg.org/peterzam/box/wiki)  
-[Blogs]() ***comming soon***
+[Blogs]() ***comming soon***  
 Check out [box](https://codeberg.org/peterzam/box/src/branch/main/box) to run and [box-build](https://codeberg.org/peterzam/box/src/branch/main/box-build) to build in example.
 
 ---
