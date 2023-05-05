@@ -117,12 +117,12 @@ case ${box} in
         ${runner} run \
         ${COMMON} ${AUDIO_PULSE} ${FONT} ${SHM} ${CHROOT} \
         -v ${BOXPATH}/configs/brave:/home/user/.config/BraveSoftware \
-        peterzam/box-brave ${CHROMIUM_WAYLAND} --proxy-server="socks5://sg-sin-wg-socks5-101.relays.mullvad.net:1080"
+        peterzam/box-brave ${CHROMIUM_WAYLAND}
         ;;
     brave-incognito) 
         ${runner} run \
         ${COMMON} ${AUDIO_PULSE} ${FONT} ${SHM} ${CHROOT} \
-        peterzam/box-brave ${CHROMIUM_WAYLAND} --proxy-server="socks5://au-per-wg-socks5-301.relays.mullvad.net:1080"
+        peterzam/box-brave ${CHROMIUM_WAYLAND}
         ;;
     gtkcord4)
         ${runner} run \
@@ -172,7 +172,6 @@ case ${box} in
 	    -v ${BOXPATH}/configs/zoom/config:/home/user/.config/ \
         peterzam/box-zoom
         ;;
-
 esac
 
 
