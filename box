@@ -58,7 +58,7 @@ CHROOT='
 
 ### SHM ###
 SHM='
---shm=2g'
+--shm-size=2g'
 
 ### USB/Serial ###
 USB='
@@ -92,7 +92,7 @@ CHROMIUM_WAYLAND='
 
 DEFAULT_DISPLAY=${DISPLAY_WAYLAND}
 
-COMMON=${NAME} ${RM} ${USERNS} ${DEFAULT_DISPLAY} ${SHARED}
+COMMON="${NAME} ${RM} ${USERNS} ${DEFAULT_DISPLAY} ${SHARED}"
 
 while getopts 'xwh:' OPTION; do
   case "$OPTION" in
