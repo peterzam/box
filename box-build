@@ -8,14 +8,14 @@ if [ "$1" = "all" ] ; then
     for f in * ; do
         if [ -d "$f" ] ; then
             echo ">>>>>> Building $f <<<<<<"
-            ${BUILDER} build -t peterzam/x-$f -f ./$f/Containerfile .
+            ${BUILDER} build -t peterzam/box-$f -f ./$f/Containerfile .
         fi
     done
 
 elif [ "$1" = "selected" ] ; then
     for f in ${x[@]} ; do
         echo ">>>>>> Building $f <<<<<<"
-        ${BUILDER} build -t peterzam/x-$f --no-cache -f ./$f/Containerfile .
+        ${BUILDER} build -t peterzam/box-$f --no-cache -f ./$f/Containerfile .
     done
 
 
@@ -30,9 +30,9 @@ elif [ "$1" = "save-all" ] ; then
 elif [ "$1" = "import-all" ] ; then
     for f in * ; do
         echo ">>>>>> Importing $f <<<<<<"
-        ${BUILDER} import $2/$f peterzam/x-$f
+        ${BUILDER} import $2/$f peterzam/box-$f
     done
 
 else
-    ${BUILDER} build -t peterzam/x-$1 -f ./$1/Containerfile .
+    ${BUILDER} build -t peterzam/box-$1 -f ./$1/Containerfile .
 fi

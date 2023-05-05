@@ -1,15 +1,15 @@
-# container
+# box
 
-My daily "GNU/Linux" softwares in container using podman.
+My daily "GNU/Linux" softwares in container.
 ## *!!! This is personal project. Don't use/try in real deployment environment !!!*
 
 ---
 
 ## Why and how?
 
-[Wiki](https://codeberg.org/peterzam/container/wiki)  
+[Wiki](https://codeberg.org/peterzam/box/wiki)  
 [Blogs]() ***comming soon***
-Check out [Makefile](https://codeberg.org/peterzam/container/src/branch/main/Makefile) for examples.
+Check out [box](https://codeberg.org/peterzam/box/src/branch/main/box) to run and [box-build] to build in example.
 
 ---
 
@@ -20,4 +20,4 @@ Check out [Makefile](https://codeberg.org/peterzam/container/src/branch/main/Mak
 ---
 ## LICENSE
 
-container is licensed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.en.html), AGPL.
+box is licensed under [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.en.html), AGPL.

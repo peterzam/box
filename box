@@ -1,0 +1,179 @@
+#!/bin/bash
+
+if [ $# -le 1 ] || [ ${1:0:1} != '-' ]
+then
+    echo -e "Specify Display type"
+    echo -e "Usage: \n-x (use X11 display) \n-w (use Wayland display)" >&2
+    exit 1
+fi
+
+
+### Runner ###
+runner='podman'
+
+### Box ###
+box=$2
+
+### BOX PATH ###
+BOXPATH='
+/home/p/custom/box'
+
+
+### name ###
+NAME='
+--name='${box}'-box'
+
+### Remove ###
+RM='
+--rm'
+
+### User ###
+USERNS='
+--userns=keep-id'
+
+### Display ###
+DISPLAY_X='
+--device=/dev/dri
+-e DISPLAY
+-v /tmp/.X11-unix:/tmp/.X11-unix'
+
+DISPLAY_WAYLAND='
+--device=/dev/dri
+-e XDG_CURRENT_DESKTOP
+-e XDG_RUNTIME_DIR
+-e WAYLAND_DISPLAY
+-v '${XDG_RUNTIME_DIR}'/'${WAYLAND_DISPLAY}':'${XDG_RUNTIME_DIR}'/'${WAYLAND_DISPLAY}
+
+### Audio ###
+AUDIO_PULSE='
+-v '${XDG_RUNTIME_DIR}'/pulse:'${XDG_RUNTIME_DIR}'/pulse'
+
+### Font ###
+FONT='
+-v /usr/share/fonts:/usr/share/fonts:ro'
+
+### CHROOT ###
+CHROOT='
+--cap-add sys_chroot'
+
+### SHM ###
+SHM='
+--shm=2g'
+
+### USB/Serial ###
+USB='
+-v /dev:/dev --device-cgroup-rule="c 188:* rmw" --device-cgroup-rule="c 81:* rmw"'
+
+### SHARED PATH ###
+SHARED='
+-v '${BOXPATH}'/shared/'${box}':/home/user/Shared'
+
+###  Transient Storage ###
+TRANSIENT='
+--transient-store'
+
+### No Network ###
+NONET='
+--network=none'
+
+
+### QT WAYLAND###
+QT_WAYLAND='
+-e QT_QPA_PLATFORM=wayland'
+
+### Mozilla WAYLAND###
+MOZILLA_WAYLAND='
+-e MOZ_ENABLE_WAYLAND=1'
+
+### Chromium WAYLAND###
+CHROMIUM_WAYLAND='
+--enable-features=UseOzonePlatform --ozone-platform=wayland'
+
+
+DEFAULT_DISPLAY=${DISPLAY_WAYLAND}
+
+COMMON=${NAME} ${RM} ${USERNS} ${DEFAULT_DISPLAY} ${SHARED}
+
+while getopts 'xwh:' OPTION; do
+  case "$OPTION" in
+    x)
+        DEFAULT_DISPLAY=${DISPLAY_X}
+        CHROMIUM_WAYLAND=""
+        MOZILLA_WAYLAND=""
+        QT_WAYLAND=""
+        ;;
+    w)
+        ;;
+    *)
+        echo -e "Usage: \n-x (use X11 display) \n-w (use Wayland display)" >&2
+        exit 1
+        ;;
+  esac
+done
+
+
+case ${box} in
+    brave)
+        ${runner} run \
+        ${COMMON} ${AUDIO_PULSE} ${FONT} ${SHM} ${CHROOT} \
+        -v ${BOXPATH}/configs/brave:/home/user/.config/BraveSoftware \
+        peterzam/box-brave ${CHROMIUM_WAYLAND} --proxy-server="socks5://sg-sin-wg-socks5-101.relays.mullvad.net:1080"
+        ;;
+    brave-incognito) 
+        ${runner} run \
+        ${COMMON} ${AUDIO_PULSE} ${FONT} ${SHM} ${CHROOT} \
+        peterzam/box-brave ${CHROMIUM_WAYLAND} --proxy-server="socks5://au-per-wg-socks5-301.relays.mullvad.net:1080"
+        ;;
+    gtkcord4)
+        ${runner} run \
+        ${COMMON} ${FONT} \
+        -v ${BOXPATH}/configs/gtkcord4:/home/user/.config/gtkcord4 \
+        peterzam/box-gtkcord4
+        ;;
+    librewolf)
+        ${runner} run \
+        ${COMMON} ${AUDIO_PULSE} ${FONT} ${CHROOT} ${MOZILLA_WAYLAND} \
+        -v ${BOXPATH}/configs/librewolf:/home/user/.librewolf \
+        peterzam/box-librewolf
+        ;;
+    mullvad-browser)
+        ${runner} run \
+        ${COMMON} ${AUDIO_PULSE} ${CHROOT} ${MOZILLA_WAYLAND} \
+        peterzam/box-mullvad-browser --verbose # Mullvad Browser run as background process in default
+        ;;
+    obs)
+        ${runner} run \
+        ${COMMON} ${AUDIO_PULSE} ${NONET} \
+	    -v ${BOXPATH}/configs/obs:/home/user/.config/obs-studio \
+        peterzam/box-obs
+        ;;
+    qbittorrent)
+        ${runner} run \
+        ${COMMON} ${NONET} ${QT_WAYLAND} \
+	    -v ${BOXPATH}/configs/qbittorrent:/home/user/.config/qBittorrent \
+        peterzam/box-qbittorrent
+        ;;
+    telegram)
+        ${runner} run \
+        ${COMMON} ${AUDIO_PULSE} ${FONT} ${QT_WAYLAND} \
+	    -v ${BOXPATH}/configs/telegram:/home/user/.local/share/TelegramDesktop \
+        peterzam/box-telegram
+        ;;
+    winbox)
+        ${runner} run \
+        ${COMMON} \
+		-v ${BOXPATH}/configs/winbox:/home/user/.wine \
+        peterzam/box-telegram
+        ;;
+    zoom)
+        ${runner} run \
+        ${COMMON} ${AUDIO_PULSE} ${CHROOT} \
+	    -v ${BOXPATH}/configs/zoom/data:/home/user/.zoom \
+	    -v ${BOXPATH}/configs/zoom/config:/home/user/.config/ \
+        peterzam/box-zoom
+        ;;
+
+esac
+
+
+# Experimental feature - -v ${XDG_RUNTIME_DIR}/pipewire-0:${XDG_RUNTIME_DIR}/pipewire-0 \
