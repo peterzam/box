@@ -4,35 +4,11 @@ BUILDER=podman
 
 x=("brave" "gtkcord4" "librewolf" "mullvad-browser" "obs" "qbittorrent" "telegram" "winbox" "zoom")
 
-if [ "$1" = "all" ] ; then
-    for f in * ; do
-        if [ -d "$f" ] ; then
-            echo ">>>>>> Building $f <<<<<<"
-            ${BUILDER} build -t peterzam/box-$f -f ./$f/Containerfile .
-        fi
-    done
-
-elif [ "$1" = "selected" ] ; then
+if [ "$1" = "selected" ] ; then
     for f in ${x[@]} ; do
         echo ">>>>>> Building $f <<<<<<"
-        ${BUILDER} build -t peterzam/box-$f --no-cache -f ./$f/Containerfile .
+        ${BUILDER} build -t peterzam/box-$f --no-cache -f https://codeberg.org/peterzam/box/raw/branch/main/$f/Containerfile .
     done
-
-
-elif [ "$1" = "save-all" ] ; then
-    for f in * ; do
-        if [ -d "$f" ] ; then
-            echo ">>>>>> Saving $f <<<<<<"
-            ${BUILDER} save --output $2/$f.tar $f
-        fi
-    done
-
-elif [ "$1" = "import-all" ] ; then
-    for f in * ; do
-        echo ">>>>>> Importing $f <<<<<<"
-        ${BUILDER} import $2/$f peterzam/box-$f
-    done
-
 else
-    ${BUILDER} build -t peterzam/box-$1 -f ./$1/Containerfile .
+    ${BUILDER} build -t peterzam/box-$1 -f https://codeberg.org/peterzam/box/raw/branch/main/$1/Containerfile .
 fi
