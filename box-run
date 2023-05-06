@@ -21,7 +21,7 @@ BOXPATH='
 
 ### name ###
 NAME='
---name='${box}'-box'
+--name='${box}'-box-'${RANDOM}
 
 ### Remove ###
 RM='
@@ -29,15 +29,18 @@ RM='
 
 ### User ###
 USERNS='
---userns=keep-id'
+--userns=keep-id
+--group-add=video' ## for gpu access
 
 ### Display ###
 DISPLAY_X='
+--device=/dev/kfd
 --device=/dev/dri
 -e DISPLAY
 -v /tmp/.X11-unix:/tmp/.X11-unix'
 
 DISPLAY_WAYLAND='
+--device=/dev/kfd
 --device=/dev/dri
 -e XDG_CURRENT_DESKTOP
 -e XDG_RUNTIME_DIR
@@ -115,13 +118,13 @@ COMMON="${NAME} ${RM} ${USERNS} ${DEFAULT_DISPLAY} ${SHARED}"
 case ${box} in
     brave)
         ${runner} run \
-        ${COMMON} ${AUDIO_PULSE} ${FONT} ${SHM} ${CHROOT} \
+        ${COMMON} ${AUDIO_PULSE} ${TRANSIENT} ${FONT} ${SHM} ${CHROOT} \
         -v ${BOXPATH}/configs/brave:/home/user/.config/BraveSoftware \
         peterzam/box-brave ${CHROMIUM_WAYLAND}
         ;;
     brave-incognito)
         ${runner} run \
-        ${COMMON} ${AUDIO_PULSE} ${FONT} ${SHM} ${CHROOT} \
+        ${COMMON} ${AUDIO_PULSE} ${TRANSIENT} ${SHM} ${CHROOT} \
         peterzam/box-brave ${CHROMIUM_WAYLAND}
         ;;
     gtkcord4)
@@ -132,13 +135,13 @@ case ${box} in
         ;;
     librewolf)
         ${runner} run \
-        ${COMMON} ${AUDIO_PULSE} ${FONT} ${CHROOT} ${MOZILLA_WAYLAND} \
+        ${COMMON} ${AUDIO_PULSE} ${TRANSIENT} ${FONT} ${CHROOT} ${MOZILLA_WAYLAND} \
         -v ${BOXPATH}/configs/librewolf:/home/user/.librewolf \
         peterzam/box-librewolf
         ;;
     mullvad-browser)
         ${runner} run \
-        ${COMMON} ${AUDIO_PULSE} ${CHROOT} ${MOZILLA_WAYLAND} \
+        ${COMMON} ${AUDIO_PULSE} ${TRANSIENT} ${CHROOT} ${MOZILLA_WAYLAND} \
         peterzam/box-mullvad-browser --verbose # Mullvad Browser run as background process in default
         ;;
     obs)
@@ -149,7 +152,7 @@ case ${box} in
         ;;
     qbittorrent)
         ${runner} run \
-        ${COMMON} ${NONET} ${QT_WAYLAND} \
+        ${COMMON} ${TRANSIENT} ${QT_WAYLAND} \
 	    -v ${BOXPATH}/configs/qbittorrent:/home/user/.config/qBittorrent \
         peterzam/box-qbittorrent
         ;;
@@ -161,9 +164,9 @@ case ${box} in
         ;;
     winbox)
         ${runner} run \
-        ${COMMON} \
+        ${COMMON} ${TRANSIENT} \
 		-v ${BOXPATH}/configs/winbox:/home/user/.wine \
-        peterzam/box-telegram
+        peterzam/box-winbox
         ;;
     zoom)
         ${runner} run \
