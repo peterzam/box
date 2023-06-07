@@ -156,6 +156,11 @@ case ${box} in
 	    -v ${BOXPATH}/configs/qbittorrent:/home/user/.config/qBittorrent \
         peterzam/box-qbittorrent
         ;;
+    staruml)
+        ${runner} run \
+        ${COMMON} ${FONT} ${SHM} \
+        peterzam/box-staruml
+        ;;
     telegram)
         ${runner} run \
         ${COMMON} ${AUDIO_PULSE} ${FONT} ${QT_WAYLAND} \

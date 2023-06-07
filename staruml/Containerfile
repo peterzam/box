@@ -1,0 +1,39 @@
+FROM alpine:latest as downloader
+RUN apk add curl
+ARG VERSION=5.1.0
+RUN curl -JLO https://staruml.io/download/releases-v5/StarUML_${VERSION}_amd64.deb
+
+FROM ubuntu:latest
+
+RUN groupadd -g 1000 -r user \
+    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user
+
+COPY --from=downloader --chown=user:user --chmod=0700 /StarUML* /tmp/staruml.deb
+
+RUN apt update && apt install -yq --no-install-recommends \
+        libgtk-3-0 \
+        libnotify4 \
+        libnss3 \
+        libxss1 \
+        libxtst6 \
+        xdg-utils \
+        libatspi2.0-0 \
+        libsecret-1-0 \
+        libxshmfence1 \
+        libdrm2 \
+        libgbm1 \
+        libasound2 \
+        libx11-xcb1 \
+        /tmp/staruml.deb \
+    && fc-cache -fv \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt autoclean && apt autoremove --purge && apt clean \
+    && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+
+
+USER user
+
+WORKDIR /home/user
+
+ENTRYPOINT [ "staruml" ]

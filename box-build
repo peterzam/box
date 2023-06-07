@@ -2,7 +2,7 @@
 
 BUILDER=podman
 
-x=("brave" "gtkcord4" "librewolf" "mullvad-browser" "obs" "qbittorrent" "telegram" "winbox" "zoom")
+x=("brave" "gtkcord4" "librewolf" "mullvad-browser" "obs" "qbittorrent" "staruml" "telegram" "winbox" "zoom")
 
 if [ "$1" = "selected" ] ; then
     for f in ${x[@]} ; do
@@ -10,5 +10,5 @@ if [ "$1" = "selected" ] ; then
         ${BUILDER} build -t peterzam/box-$f --no-cache -f https://codeberg.org/peterzam/box/raw/branch/main/$f/Containerfile .
     done
 else
-    ${BUILDER} build -t peterzam/box-$1 -f https://codeberg.org/peterzam/box/raw/branch/main/$1/Containerfile .
+    ${BUILDER} build -t peterzam/box-$1 -f ./$1/Containerfile .
 fi
