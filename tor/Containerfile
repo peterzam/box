@@ -19,6 +19,7 @@ RUN apt update && apt install -yq --no-install-recommends \
         file \
         libavcodec58 \
         libpulse0 \
+        libasound2 \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge && apt clean \
