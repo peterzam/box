@@ -167,6 +167,11 @@ case ${box} in
 	    -v ${BOXPATH}/configs/telegram:/home/user/.local/share/TelegramDesktop \
         peterzam/box-telegram
         ;;
+    tor)
+        ${runner} run \
+        ${COMMON} ${AUDIO_PULSE} ${TRANSIENT} ${CHROOT} ${MOZILLA_WAYLAND} \
+        peterzam/box-tor
+        ;;
     winbox)
         ${runner} run \
         ${COMMON} ${TRANSIENT} \
