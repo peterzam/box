@@ -29,7 +29,7 @@ RM='
 
 ### User ###
 USERNS='
---userns=keep-id
+--userns=keep-id:gid=1000
 --group-add=video' ## for gpu access
 
 ### Display ###
