@@ -152,7 +152,7 @@ case ${box} in
         ;;
     obsidian)
         ${runner} run -it \
-        ${COMMON} ${NONET} \
+        ${COMMON} ${TRANSIENT} ${NONET} \
 	    -v ${BOXPATH}/configs/obsidian:/home/user/.config/obsidian \
         peterzam/box-obsidian
         ;;
