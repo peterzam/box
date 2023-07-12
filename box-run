@@ -150,6 +150,12 @@ case ${box} in
 	    -v ${BOXPATH}/configs/obs:/home/user/.config/obs-studio \
         peterzam/box-obs
         ;;
+    obsidian)
+        ${runner} run -it \
+        ${COMMON} ${NONET} \
+	    -v ${BOXPATH}/configs/obsidian:/home/user/.config/obsidian \
+        peterzam/box-obsidian
+        ;;
     qbittorrent)
         ${runner} run \
         ${COMMON} ${TRANSIENT} ${QT_WAYLAND} \
