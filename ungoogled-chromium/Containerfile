@@ -29,6 +29,8 @@ RUN apt update && apt install -yq --no-install-recommends\
         libgl1 \
         libegl1-mesa \
         libpulse0 \
+        xdg-desktop-portal \
+        xdg-desktop-portal-gtk \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge && apt clean \
