@@ -182,7 +182,7 @@ case ${box} in
         ${runner} run \
         ${COMMON} ${AUDIO_PULSE} ${TRANSIENT} ${FONT} ${SHM} ${CHROOT} \
         -v ${BOXPATH}/configs/ungoogled-chromium:/home/user/.config/chromium \
-        peterzam/box-ungoogled-chromium ${CHROMIUM_WAYLAND}
+        peterzam/box-ungoogled-chromium ${CHROMIUM_WAYLAND} --disable-top-sites
         ;;
     ungoogled-chromium-incognito)
         ${runner} run \
