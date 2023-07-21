@@ -178,6 +178,17 @@ case ${box} in
         ${COMMON} ${AUDIO_PULSE} ${TRANSIENT} ${CHROOT} ${MOZILLA_WAYLAND} \
         peterzam/box-tor
         ;;
+    ungoogled-chromium)
+        ${runner} run \
+        ${COMMON} ${AUDIO_PULSE} ${TRANSIENT} ${FONT} ${SHM} ${CHROOT} \
+        -v ${BOXPATH}/configs/ungoogled-chromium:/home/user/.config/chromium \
+        peterzam/box-ungoogled-chromium ${CHROMIUM_WAYLAND}
+        ;;
+    ungoogled-chromium-incognito)
+        ${runner} run \
+        ${COMMON} ${AUDIO_PULSE} ${TRANSIENT} ${FONT} ${SHM} ${CHROOT} \
+        peterzam/box-ungoogled-chromium ${CHROMIUM_WAYLAND}
+        ;;
     winbox)
         ${runner} run \
         ${COMMON} ${TRANSIENT} \

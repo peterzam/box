@@ -1,0 +1,43 @@
+FROM alpine:latest as downloader
+RUN apk add curl xz
+RUN curl -JLO $(curl -s https://api.github.com/repos/clickot/ungoogled-chromium-binaries/releases | grep -E ".*url.*tar.xz" | cut -d '"' -f4 | head -1) \
+    && tar xf ungoogled-chromium* -C /tmp
+
+FROM ubuntu:latest
+
+RUN groupadd -g 1000 -r user \
+    && useradd -u 1000 -s /bin/bash -r -G video -g 1000 -m user
+
+COPY --from=downloader --chown=user:user /tmp/ungoogled-chromium* /ungoogled-chromium
+
+RUN apt update && apt install -yq --no-install-recommends\
+        libglib2.0-0 \
+        libnss3 \
+        libatk1.0-0 \
+        libatk-bridge2.0-0 \
+        libcups2 \
+        libdrm2 \
+        libxcomposite1 \
+        libxdamage1 \
+        libxfixes3 \
+        libxrandr2 \
+        libxkbcommon0 \
+        libgbm1 \
+        libpango-1.0-0 \
+        libcairo2 \
+        libasound2 \
+        libgl1 \
+        libegl1-mesa \
+        libpulse0 \
+    && fc-cache -fv \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt autoclean && apt autoremove --purge && apt clean \
+    && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \; \
+    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
+
+USER user
+
+WORKDIR /home/user
+
+ENTRYPOINT [ "/ungoogled-chromium/chrome" ]
