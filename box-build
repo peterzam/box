@@ -6,7 +6,11 @@ x=("brave" "gtkcord4" "librewolf" "mullvad-browser" "obs" "qbittorrent" "staruml
 
 if [ "$1" = "selected" ] ; then
     for f in ${x[@]} ; do
-        echo ">>>>>> Building $f <<<<<<"
+        echo "=-------------------------------------->"
+        echo "|"
+        echo "|-----> Building $f"
+        echo "|"
+        echo "=-------------------------------------->"
         ${BUILDER} build -t peterzam/box-$f --no-cache -f https://codeberg.org/peterzam/box/raw/branch/main/$f/Containerfile .
     done
 else
