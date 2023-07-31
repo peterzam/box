@@ -67,6 +67,10 @@ SHM='
 USB='
 -v /dev:/dev --device-cgroup-rule="c 188:* rmw" --device-cgroup-rule="c 81:* rmw"'
 
+### Camera ### #video[int] for other cams
+CAMERA='
+--device /dev/video0'
+
 ### SHARED PATH ###
 SHARED='
 -v '${BOXPATH}'/shared/'${box}':/home/user/Shared'
@@ -78,7 +82,6 @@ TRANSIENT='
 ### No Network ###
 NONET='
 --network=none'
-
 
 ### QT WAYLAND###
 QT_WAYLAND='
