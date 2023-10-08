@@ -2,7 +2,7 @@
 
 BUILDER=podman
 
-x=("brave" "gtkcord4" "librewolf" "mullvad-browser" "obs" "qbittorrent" "staruml" "telegram" "tor" "ungoogled-chromium" "winbox" "zoom")
+x=("brave" "gtkcord4" "libreoffice" "librewolf" "mullvad-browser" "obs" "qbittorrent" "staruml" "telegram" "tor" "ungoogled-chromium" "winbox" "zoom")
 
 if [ "$1" = "selected" ] ; then
     for f in ${x[@]} ; do

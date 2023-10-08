@@ -136,6 +136,11 @@ case ${box} in
         -v ${BOXPATH}/configs/gtkcord4:/home/user/.config/gtkcord4 \
         peterzam/box-gtkcord4
         ;;
+    libreoffice)
+        ${runner} run \
+        ${COMMON} ${AUDIO_PULSE} ${TRANSIENT} ${FONT} \
+        peterzam/box-libreoffice
+        ;;
     librewolf)
         ${runner} run \
         ${COMMON} ${AUDIO_PULSE} ${TRANSIENT} ${FONT} ${CHROOT} ${MOZILLA_WAYLAND} \
