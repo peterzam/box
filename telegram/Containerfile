@@ -16,6 +16,7 @@ RUN apt update && apt install -yq --no-install-recommends \
         libgl1 \
         qt6-wayland \
         libpulse0 \
+        libgtk-3-0 \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge && apt clean \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
