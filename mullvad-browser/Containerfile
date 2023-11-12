@@ -1,6 +1,6 @@
 FROM alpine:latest as downloader
 RUN apk add curl
-RUN curl -JLO https://mullvad.net/en/download/browser/linux64/latest \
+RUN curl -JLO https://mullvad.net/en/download/browser/linux-x86_64/latest \
     && tar xvf latest
 
 
