@@ -5,8 +5,7 @@ RUN curl -JLO $(curl -s https://api.github.com/repos/clickot/ungoogled-chromium-
 
 FROM ubuntu:latest
 
-RUN groupadd -g 1000 -r user \
-    && useradd -u 1000 -s /bin/bash -r -G video -g 1000 -m user
+RUN usermod -l user -d /home/user -m ubuntu && groupmod -n user ubuntu
 
 COPY --from=downloader --chown=user:user /tmp/ungoogled-chromium* /ungoogled-chromium
 
@@ -25,18 +24,19 @@ RUN apt update && apt install -yq --no-install-recommends\
         libgbm1 \
         libpango-1.0-0 \
         libcairo2 \
-        libasound2 \
         libgl1 \
-        libegl1-mesa \
+        libegl1 \
         libpulse0 \
         xdg-desktop-portal \
-        xdg-desktop-portal-gtk \
-    && fc-cache -fv \
+        xdg-desktop-portal-gtk
+
+RUN fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge && apt clean \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
-    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \; \
-    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+
+RUN  echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
 
 USER user
 
