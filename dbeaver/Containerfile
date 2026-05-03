@@ -5,20 +5,21 @@ RUN curl -J -L -O https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
 
 FROM ubuntu:latest
 
-RUN groupadd -g 1000 -r user \
-    && useradd -u 1000 -s /bin/bash -r -G video -g 1000 -m user
+RUN usermod -l user -d /home/user -m ubuntu && groupmod -n user ubuntu
 
 COPY --from=downloader --chown=user:user /dbeaver-ce* /dbeaver.deb
 
 RUN apt update && apt install -yq --no-install-recommends \
         libswt-gtk-4-jni \
-        /dbeaver.deb \
-    && fc-cache -fv \
+        /dbeaver.deb
+
+RUN fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge && apt clean \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
-    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \; \
-    && rm -rf /dbeaver.deb
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+
+RUN rm -rf /dbeaver.deb
 
 USER user
 

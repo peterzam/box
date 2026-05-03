@@ -1,0 +1,16 @@
+services:
+  box-dbeaver:
+    build:
+      context: .
+      dockerfile: Containerfile
+    image: localhost/box-dbeaver:latest
+    container_name: "box-dbeaver-${RANDOM}"
+    userns_mode: "keep-id:uid=${PUID},gid=${PGID}"
+    environment:
+      - XDG_CURRENT_DESKTOP
+      - XDG_RUNTIME_DIR
+      - WAYLAND_DISPLAY
+    volumes:
+      - /run/user/${PUID}/wayland-1:/run/user/1000/wayland-1
+      - ${BOX_MOUNT}/shared/dbeaver:/home/user/Shared
+      - /usr/share/fonts:/usr/share/fonts:ro
