@@ -1,8 +1,7 @@
 services:
   box-brave-browser:
     build:
-      context: .
-      dockerfile: Containerfile
+      context: https://github.com/peterzam/box.git#main:brave
     image: localhost/box-brave-browser:latest
     container_name: "box-brave-browser-${RANDOM}"
     userns_mode: "keep-id:uid=${PUID},gid=${PGID}"
