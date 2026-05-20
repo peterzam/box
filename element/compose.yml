@@ -1,0 +1,20 @@
+services:
+  box-element:
+    build:
+      context: https://github.com/peterzam/box.git#main:element
+    image: localhost/box-element:latest
+    container_name: "box-element-${RANDOM}"
+    userns_mode: "keep-id:uid=${PUID},gid=${PGID}"
+    group_add:
+      - video
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    environment:
+      - XDG_CURRENT_DESKTOP
+      - XDG_RUNTIME_DIR
+      - WAYLAND_DISPLAY
+    volumes:
+      - /run/user/${PUID}/wayland-1:/run/user/1000/wayland-1
+      - ${BOX_MOUNT}/shared/element:/home/user/Shared
+      - /run/user/${PUID}/pulse:/run/user/1000/pulse
