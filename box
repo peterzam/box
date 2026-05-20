@@ -1,0 +1,110 @@
+#!/bin/bash
+
+BOX_PATH="${BOX_PATH:-$(pwd)}"
+BOX_MOUNT="${BOX_MOUNT:-$HOME/box-mount}"
+REPO_URL="https://github.com/peterzam/box/raw/branch/main"
+
+usage() {
+    echo "Box - Manage personal software containers"
+    echo "Usage: box <command> [arguments]"
+    echo ""
+    echo "Commands:"
+    echo "  run <program_name>       Run the application via podman-compose with user environment variables"
+    echo "  build <program_name>     Build the container image cleanly using podman build (--no-cache)"
+    echo "  install <program_name>   Alias for build command"
+    echo "  update                   Check the version update with comment of the Containerfile"
+    echo "  box-install              Install this box command into your local user PATH (~/.local/bin)"
+    exit 1
+}
+
+if [ $# -lt 1 ]; then
+    usage
+fi
+
+COMMAND="$1"
+shift
+
+case "$COMMAND" in
+    run)
+        PROGRAM_NAME="$1"
+        if [ -z "$PROGRAM_NAME" ]; then
+            echo "Error: Please specify a program name to run."
+            exit 1
+        fi
+
+        COMPOSE_FILE="${BOX_PATH}/${PROGRAM_NAME}/compose.yml"
+        if [ ! -f "$COMPOSE_FILE" ]; then
+            echo "Error: compose.yml not found at $COMPOSE_FILE"
+            exit 1
+        fi
+
+        mkdir -p "$BOX_MOUNT"
+
+        echo "Starting ${PROGRAM_NAME} container stack with local mount at $BOX_MOUNT..."
+        
+        RANDOM=$RANDOM PUID=$(id -u) PGID=$(id -g) BOX_MOUNT="$BOX_MOUNT" podman-compose -f "$COMPOSE_FILE" up
+        ;;
+
+    build|install)
+        PROGRAM_NAME="$1"
+        if [ -z "$PROGRAM_NAME" ]; then
+            echo "Error: Please specify a program name to build/install."
+            exit 1
+        fi
+
+        CONTAINER_FILE="${BOX_PATH}/${PROGRAM_NAME}/Containerfile"
+        if [ ! -f "$CONTAINER_FILE" ]; then
+            echo "Error: Containerfile not found at $CONTAINER_FILE"
+            exit 1
+        fi
+
+        echo "Building container image for '${PROGRAM_NAME}' with --no-cache..."
+        podman build --no-cache -t "peterzam/box-${PROGRAM_NAME}" -f "$CONTAINER_FILE" "${BOX_PATH}/${PROGRAM_NAME}"
+        ;;
+
+    update)
+        echo "Checking application version updates..."
+        echo "================================================"
+        
+        for dir in "${BOX_PATH}"/*/; do
+            [ -d "$dir" ] || continue
+            prog=$(basename "$dir")
+            local_cfile="${dir}Containerfile"
+            
+            if [ -f "$local_cfile" ]; then
+                # Extracts the version number from the top comment lines
+                local_version=$(head -n 5 "$local_cfile" | grep -i '^#\s*version:' | sed -E 's/^#\s*version:\s*//I' | xargs)
+                [ -z "$local_version" ] && local_version="unknown"
+                
+                # Fetches the remote Containerfile header from the Codeberg repository
+                remote_url="${REPO_URL}/${prog}/Containerfile"
+                remote_version=$(curl -sL --max-time 5 "$remote_url" | head -n 5 | grep -i '^#\s*version:' | sed -E 's/^#\s*version:\s*//I' | xargs)
+                
+                if [ -z "$remote_version" ]; then
+                    echo "[-] ${prog}: Local [${local_version}] | Remote version could not be checked."
+                elif [ "$local_version" != "$remote_version" ]; then
+                    echo "[!] ${prog}: UPDATE DETECTED! Local: [${local_version}] -> Remote: [${remote_version}]"
+                    echo "    To upgrade, pull changes and run: box build ${prog}"
+                else
+                    echo "[✓] ${prog}: Up to date (Version: ${local_version})"
+                fi
+            fi
+        done
+        ;;
+
+    box-install)
+        INSTALL_DIR="$HOME/.local/bin"
+        mkdir -p "$INSTALL_DIR"
+        
+        cp "$0" "$INSTALL_DIR/box"
+        chmod +x "$INSTALL_DIR/box"
+        
+        echo "Successfully installed 'box' to $INSTALL_DIR/box"
+        echo "Make sure '$INSTALL_DIR' is added to your system's PATH variable."
+        ;;
+
+    *)
+        echo "Unknown command: $COMMAND"
+        usage
+        ;;
+esac
