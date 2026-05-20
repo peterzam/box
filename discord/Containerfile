@@ -1,13 +1,13 @@
+# version: 1.0.0
+
 FROM alpine:latest as downloader
 RUN apk add curl
 RUN curl -fSL "https://discord.com/api/download?platform=linux&format=tar.gz" -o discord.tar.gz \
     && tar xzvf discord.tar.gz
 
-
 FROM ubuntu:latest
 
-RUN groupadd -g 1000 -r user \
-    && useradd -u 1000 -s /bin/bash -r -G audio,video -g 1000 -m user
+RUN usermod -l user -d /home/user -m ubuntu && groupmod -n user ubuntu
 
 RUN apt update && apt install -yq --no-install-recommends \
         keyboard-configuration \
@@ -15,10 +15,8 @@ RUN apt update && apt install -yq --no-install-recommends \
         libxshmfence1 \
         libdrm2 \
         libc++1 \
-        libappindicator1 \
         gvfs \
         libcap2 \
-        libgconf-2-4 \
         libgtk-3-0 \
         libcanberra-gtk3-module \
         libnotify4 \
@@ -31,13 +29,15 @@ RUN apt update && apt install -yq --no-install-recommends \
         libatomic1 \
         wget \
         ca-certificates \
-        libpulse0 \
-    && fc-cache -fv \
+        libpulse0
+
+RUN fc-cache -fv \
     && rm -rf /var/lib/apt/lists/* \
     && apt autoclean && apt autoremove --purge && apt clean \
     && find / -xdev -type f -perm /u+s -exec chmod -c u-s {} \; \
-    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \; \
-    && echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
+    && find / -xdev -type f -perm /g+s -exec chmod -c g-s {} \;
+
+RUN echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
 
 COPY --from=downloader --chown=user:user Discord /home/user/Discord
 
