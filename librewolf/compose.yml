@@ -1,0 +1,24 @@
+services:
+  box-librewolf:
+    image: localhost/peterzam/box-librewolf:latest
+    container_name: "box-librewolf"
+    userns_mode: "keep-id:uid=${PUID},gid=${PGID}"
+    group_add:
+      - video
+    cap_add:
+      - SYS_CHROOT
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    environment:
+      - XDG_CURRENT_DESKTOP
+      - XDG_RUNTIME_DIR
+      - WAYLAND_DISPLAY
+      - MOZ_ENABLE_WAYLAND=1
+    volumes:
+      - /run/user/${PUID}/wayland-1:/run/user/1000/wayland-1
+      - ${BOX_MOUNT}/shared/librewolf:/home/user/Shared
+      - /run/user/${PUID}/pulse:/run/user/1000/pulse
+      - /usr/share/fonts:/usr/share/fonts:ro
+      - ${BOX_MOUNT}/configs/librewolf:/home/user/.librewolf
+    command: librewolf
