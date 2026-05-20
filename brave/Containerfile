@@ -1,3 +1,5 @@
+# version: 1.0.0
+
 FROM ubuntu:latest
 
 RUN usermod -l user -d /home/user -m ubuntu && groupmod -n user ubuntu
