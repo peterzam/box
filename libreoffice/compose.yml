@@ -1,0 +1,18 @@
+services:
+  box-libreoffice:
+    image: localhost/peterzam/box-libreoffice:latest
+    container_name: "box-libreoffice"
+    userns_mode: "keep-id:uid=${PUID},gid=${PGID}"
+    group_add:
+      - video
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    environment:
+      - DISPLAY
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${BOX_MOUNT}/shared/libreoffice:/home/user/Shared
+      - /run/user/${PUID}/pulse:/run/user/1000/pulse
+      - /usr/share/fonts:/usr/share/fonts:ro
+    command: libreoffice
