@@ -1,3 +1,5 @@
+# version: 1.0.0
+
 FROM alpine:latest as downloader
 RUN apk add curl
 RUN curl -J -L -O https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
