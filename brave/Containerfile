@@ -25,7 +25,3 @@ RUN fc-cache -fv \
 RUN echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
 
 USER user
-
-WORKDIR /home/user
-
-ENTRYPOINT [ "brave-browser" ]

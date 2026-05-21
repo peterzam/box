@@ -1,9 +1,7 @@
 services:
-  box-brave-browser:
-    build:
-      context: https://github.com/peterzam/box.git#main:brave
-    image: localhost/box-brave-browser:latest
-    container_name: "box-brave-browser-${RANDOM}"
+  box-brave:
+    image: localhost/peterzam/box-brave:latest
+    container_name: "box-brave"
     userns_mode: "keep-id:uid=${PUID},gid=${PGID}"
     cap_add:
       - SYS_CHROOT
@@ -22,6 +20,4 @@ services:
       - /usr/share/fonts:/usr/share/fonts:ro
       - ${BOX_MOUNT}/configs/brave:/home/user/.config/BraveSoftware
     shm_size: "2gb"
-    command:
-      - --enable-features=UseOzonePlatform
-      - --ozone-platform=wayland
+    command: brave-browser --enable-features=UseOzonePlatform --ozone-platform=wayland
