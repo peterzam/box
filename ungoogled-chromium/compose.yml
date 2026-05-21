@@ -1,9 +1,7 @@
 services:
   box-ungoogled-chromium:
-    build:
-      context: https://github.com/peterzam/box.git#main:ungoogled-chromium
-    image: localhost/box-ungoogled-chromium:latest
-    container_name: "box-ungoogled-chromium-${RANDOM}"
+    image: localhost/peterzam/box-ungoogled-chromium:latest
+    container_name: "box-ungoogled-chromium"
     userns_mode: "keep-id:uid=${PUID},gid=${PGID}"
     group_add:
       - video
@@ -24,7 +22,5 @@ services:
       - /usr/share/fonts:/usr/share/fonts:ro
       - ${BOX_MOUNT}/configs/ungoogled-chromium:/home/user/.config/chromium
     shm_size: "2gb"
-    command:
-      - --enable-features=UseOzonePlatform
-      - --ozone-platform=wayland
-      - --disable-top-sites
+    command: /home/user/ungoogled-chromium/chrome --enable-features=UseOzonePlatform
+      --ozone-platform=wayland --disable-top-sites

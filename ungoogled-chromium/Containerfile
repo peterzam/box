@@ -7,7 +7,7 @@ FROM ubuntu:latest
 
 RUN usermod -l user -d /home/user -m ubuntu && groupmod -n user ubuntu
 
-COPY --from=downloader --chown=user:user /tmp/ungoogled-chromium* /ungoogled-chromium
+COPY --from=downloader --chown=user:user /tmp/ungoogled-chromium* /home/user/ungoogled-chromium
 
 RUN apt update && apt install -yq --no-install-recommends\
         libglib2.0-0 \
@@ -39,7 +39,3 @@ RUN fc-cache -fv \
 RUN  echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndaemon-binary = /bin/true\nenable-shm = false" > /etc/pulse/client.conf
 
 USER user
-
-WORKDIR /home/user
-
-ENTRYPOINT [ "/ungoogled-chromium/chrome" ]
