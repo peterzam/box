@@ -24,7 +24,3 @@ RUN fc-cache -fv \
 RUN rm -rf /dbeaver.deb
 
 USER user
-
-WORKDIR /home/user
-
-ENTRYPOINT [ "dbeaver" ]

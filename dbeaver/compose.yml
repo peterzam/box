@@ -1,9 +1,7 @@
 services:
   box-dbeaver:
-    build:
-      context: https://github.com/peterzam/box.git#main:dbeaver
-    image: localhost/box-dbeaver:latest
-    container_name: "box-dbeaver-${RANDOM}"
+    image: localhost/peterzam/box-dbeaver:latest
+    container_name: "box-dbeaver"
     userns_mode: "keep-id:uid=${PUID},gid=${PGID}"
     environment:
       - XDG_CURRENT_DESKTOP
@@ -13,3 +11,4 @@ services:
       - /run/user/${PUID}/wayland-1:/run/user/1000/wayland-1
       - ${BOX_MOUNT}/shared/dbeaver:/home/user/Shared
       - /usr/share/fonts:/usr/share/fonts:ro
+    command: dbeaver
