@@ -42,7 +42,3 @@ RUN echo "default-server = unix:/run/user/1000/pulse/native\nautospawn = no\ndae
 COPY --from=downloader --chown=user:user Discord /home/user/Discord
 
 USER user
-
-WORKDIR /home/user
-
-ENTRYPOINT [ "/home/user/Discord/Discord" ]

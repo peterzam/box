@@ -1,9 +1,7 @@
 services:
   box-discord:
-    build:
-      context: https://github.com/peterzam/box.git#main:discord
-    image: localhost/box-discord:latest
-    container_name: "box-discord-${RANDOM}"
+    image: localhost/peterzam/box-discord:latest
+    container_name: "box-discord"
     userns_mode: "keep-id:uid=${PUID},gid=${PGID}"
     group_add:
       - video
@@ -20,6 +18,5 @@ services:
       - /run/user/${PUID}/pulse:/run/user/1000/pulse
       - /usr/share/fonts:/usr/share/fonts:ro
     shm_size: "2gb"
-    command:
-      - --enable-features=UseOzonePlatform
-      - --ozone-platform=wayland
+    command: /home/user/Discord/Discord --enable-features=UseOzonePlatform
+      --ozone-platform=wayland
