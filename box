@@ -1,22 +1,29 @@
 #!/bin/bash
 
-BOX_PATH="${BOX_PATH:-$(pwd)}"
-BOX_MOUNT="${BOX_MOUNT:-$HOME/box-mount}"
-REPO_URL="https://github.com/peterzam/box/raw/branch/main"
+BOX_PATH=$(pwd)
+
+COMPOSE_DIR="${BOX_PATH}/compose"
+MOUNT_DIR="${BOX_PATH}/mount"
+
+# GitHub's raw user content layout
+REPO_URL="https://raw.githubusercontent.com/peterzam/box/refs/heads/v2"
 
 usage() {
     echo "Box - Manage personal software containers"
     echo "Usage: box <command> [arguments]"
     echo ""
     echo "Commands:"
-    echo "  run <program_name>       Run the application via podman-compose with user environment variables"
-    echo "  build <program_name>     Build the container image cleanly using podman build (--no-cache)"
-    echo "  install <program_name>   Alias for build command"
-    echo "  update                   Check the version update with comment of the Containerfile"
-    echo "  box-install              Install this box command into your local user PATH (~/.local/bin)"
+    echo "  run <program_name>       Run/attach to application via podman-compose"
+    echo "  build <program_name>     Build container image using remote GitHub Containerfile"
+    echo "                           Options: Default is --no-cache. Pass '--cache' to allow cached layers."
+    echo "  install <program_name>   Download the compose manifest configuration file from GitHub into storage"
+    echo "  update                   Check running podman image version against GitHub version"
+    echo "  uninstall <program_name> Remove the local podman image"
+    echo "  box-install [path]       Install this script to ~/.local/bin and lock in the parent [path] (defaults to pwd)"
     exit 1
 }
 
+# Ensure at least one argument is provided
 if [ $# -lt 1 ]; then
     usage
 fi
@@ -32,75 +39,203 @@ case "$COMMAND" in
             exit 1
         fi
 
-        COMPOSE_FILE="${BOX_PATH}/${PROGRAM_NAME}/compose.yml"
+        COMPOSE_FILE="${COMPOSE_DIR}/${PROGRAM_NAME}/compose.yml"
         if [ ! -f "$COMPOSE_FILE" ]; then
-            echo "Error: compose.yml not found at $COMPOSE_FILE"
+            echo "Error: compose.yml not found at $COMPOSE_FILE. Have you run 'box install ${PROGRAM_NAME}'?"
             exit 1
         fi
 
-        mkdir -p "$BOX_MOUNT"
+        # Looks for any running container whose name contains the program identifier (e.g., box-brave-browser)
+        running_container_name=$(podman ps --filter "name=-${PROGRAM_NAME}" --filter "status=running" --format "{{.Names}}" | head -n 1)
 
-        echo "Starting ${PROGRAM_NAME} container stack with local mount at $BOX_MOUNT..."
-        
-        RANDOM=$RANDOM PUID=$(id -u) PGID=$(id -g) BOX_MOUNT="$BOX_MOUNT" podman-compose -f "$COMPOSE_FILE" up
+        if [ -n "$running_container_name" ]; then
+            echo "Container '${running_container_name}' is already running."
+            echo "Executing a new session inside the running container..."
+
+            # Parse entrypoint or command arrays out of compose.yml using sed/awk fallbacks
+            exec_cmd=$(awk '/^\s*(entrypoint|command):/ && !found {
+                            found = 1; 
+                            match($0, /^\s*/); indent = RLENGTH; # Remember the indentation level
+                            sub(/^\s*(entrypoint|command):\s*/, ""); # Strip the key prefix
+                            print; next;
+                            }
+                            found {
+                                match($0, /^\s*/);
+                                if (RLENGTH > indent || $0 ~ /^\s*$/) {
+                                  sub(/^\s*-\s*/, ""); # Strip YAML list dashes (-) if they exist
+                                  print;
+                                } else { exit } # Stop as soon as indentation goes back to normal
+                              }
+                            ' "$COMPOSE_FILE" | tr -d '"'\''[]>|')
+            if [ -z "$exec_cmd" ]; then
+                if podman exec "$running_container_name" which bash >/dev/null 2>&1; then
+                    exec_cmd="bash"
+                else
+                    exec_cmd="sh"
+                fi
+            fi
+
+            # Execute terminal directly using the verified container name string
+            podman exec -it "$running_container_name" $exec_cmd
+        else
+            # Pre-create the program-specific mount subdirectory within the new centralized mount folder
+            mkdir -p "$MOUNT_DIR"
+
+            echo "Starting a fresh '${PROGRAM_NAME}' container stack detached (-d)..."
+            echo "Compose Context: $COMPOSE_FILE"
+            echo "Mount Context:   $MOUNT_DIR"
+            
+            # Map BOX_MOUNT to the consolidated mount path for the compose layer
+            PUID=$(id -u) PGID=$(id -g) BOX_MOUNT="$MOUNT_DIR" podman-compose -f "$COMPOSE_FILE" up -d
+        fi
         ;;
 
-    build|install)
+    build)
+        PROGRAM_NAME="$1"
+        OPTIONAL_FLAG="$2"
+        if [ -z "$PROGRAM_NAME" ]; then
+            echo "Error: Please specify a program name to build."
+            exit 1
+        fi
+
+        remote_containerfile="${REPO_URL}/${PROGRAM_NAME}/Containerfile"
+        echo "Fetching and parsing version metadata from remote GitHub Containerfile..."
+        
+        # Temp fetch top comments to safely track version tag configurations
+        version=$(curl -sL --max-time 5 "$remote_containerfile" | head -n 5 | grep -i '^#\s*version:' | sed -E 's/^#\s*version:\s*//I' | xargs)
+
+        # Evaluate cache flags natively passed downstream
+        CACHE_ARG="--no-cache"
+        if [ "$OPTIONAL_FLAG" = "--cache" ]; then
+            echo "Flag '--cache' detected. Building container using layer caching mechanics..."
+            CACHE_ARG=""
+        else
+            echo "Building cleanly via --no-cache context defaults..."
+        fi
+
+        echo "Building container image using remote asset context stream..."
+        image_name="peterzam/box-${PROGRAM_NAME}"
+        
+        # Pull and compile via direct HTTP Context stream without requiring local file storage clones
+        podman build $CACHE_ARG -t "${image_name}:latest" -f "$remote_containerfile" "https://github.com/peterzam/box.git#main:${PROGRAM_NAME}"
+        
+        if [ -n "$version" ]; then
+            echo "Tagging image with version: ${version}"
+            podman tag "${image_name}:latest" "${image_name}:${version}"
+        else
+            echo "Warning: No '# version:' comment found in remote GitHub Containerfile. Skipping version tagging."
+        fi
+        ;;
+
+    install)
         PROGRAM_NAME="$1"
         if [ -z "$PROGRAM_NAME" ]; then
-            echo "Error: Please specify a program name to build/install."
+            echo "Error: Please specify a program name to install."
             exit 1
         fi
 
-        CONTAINER_FILE="${BOX_PATH}/${PROGRAM_NAME}/Containerfile"
-        if [ ! -f "$CONTAINER_FILE" ]; then
-            echo "Error: Containerfile not found at $CONTAINER_FILE"
+        TARGET_DIR="${COMPOSE_DIR}/${PROGRAM_NAME}"
+        echo "Creating target app directory inside consolidated compose registry: $TARGET_DIR..."
+        mkdir -p "$TARGET_DIR"
+
+        remote_compose_url="${REPO_URL}/${PROGRAM_NAME}/compose.yml"
+        echo "Downloading compose layout configuration from: $remote_compose_url"
+        
+        curl -sL --max-time 10 "$remote_compose_url" -o "${TARGET_DIR}/compose.yml"
+
+        if [ -s "${TARGET_DIR}/compose.yml" ]; then
+            echo "[✓] Configuration manifest saved successfully to: ${TARGET_DIR}/compose.yml"
+            echo "    You can now run: box build ${PROGRAM_NAME} followed by box run ${PROGRAM_NAME}"
+        else
+            echo "Error: Failed to fetch valid content from GitHub endpoint. Removing blank profile context."
+            rm -rf "$TARGET_DIR"
             exit 1
         fi
-
-        echo "Building container image for '${PROGRAM_NAME}' with --no-cache..."
-        podman build --no-cache -t "peterzam/box-${PROGRAM_NAME}" -f "$CONTAINER_FILE" "${BOX_PATH}/${PROGRAM_NAME}"
         ;;
 
     update)
-        echo "Checking application version updates..."
-        echo "================================================"
+        echo "Checking local Podman image versions against GitHub..."
+        echo "========================================================"
         
-        for dir in "${BOX_PATH}"/*/; do
+        if [ ! -d "$COMPOSE_DIR" ]; then
+            echo "Error: The consolidated compose directory does not exist: $COMPOSE_DIR"
+            exit 1
+        fi
+
+        for dir in "${COMPOSE_DIR}"/*/; do
             [ -d "$dir" ] || continue
             prog=$(basename "$dir")
-            local_cfile="${dir}Containerfile"
             
-            if [ -f "$local_cfile" ]; then
-                # Extracts the version number from the top comment lines
-                local_version=$(head -n 5 "$local_cfile" | grep -i '^#\s*version:' | sed -E 's/^#\s*version:\s*//I' | xargs)
-                [ -z "$local_version" ] && local_version="unknown"
-                
-                # Fetches the remote Containerfile header from the Codeberg repository
-                remote_url="${REPO_URL}/${prog}/Containerfile"
-                remote_version=$(curl -sL --max-time 5 "$remote_url" | head -n 5 | grep -i '^#\s*version:' | sed -E 's/^#\s*version:\s*//I' | xargs)
-                
-                if [ -z "$remote_version" ]; then
-                    echo "[-] ${prog}: Local [${local_version}] | Remote version could not be checked."
-                elif [ "$local_version" != "$remote_version" ]; then
-                    echo "[!] ${prog}: UPDATE DETECTED! Local: [${local_version}] -> Remote: [${remote_version}]"
-                    echo "    To upgrade, pull changes and run: box build ${prog}"
-                else
-                    echo "[✓] ${prog}: Up to date (Version: ${local_version})"
-                fi
+            image_name="localhost/peterzam/box-${prog}"
+            
+            local_version=$(podman image inspect "$image_name" --format '{{join .RepoTags ", "}}' 2>/dev/null \
+                | tr ',' '\n' \
+                | grep -v 'latest' \
+                | sed -E "s|.*${image_name}:||" \
+                | xargs)
+            
+            if [ -z "$local_version" ]; then
+                local_version="unknown"
+            fi
+            
+            remote_url="${REPO_URL}/${prog}/Containerfile"
+            remote_version=$(curl -sL --max-time 5 "$remote_url" | head -n 5 | grep -i '^#\s*version:' | sed -E 's/^#\s*version:\s*//I' | xargs)
+            
+            if [ -z "$remote_version" ]; then
+                echo "[-] ${prog}: Local Image [${local_version}] | GitHub version could not be fetched."
+            elif [ "$local_version" != "$remote_version" ]; then
+                echo "[!] ${prog}: UPDATE DETECTED! Local Image: [${local_version}] -> GitHub File: [${remote_version}]"
+                echo "    To upgrade, run: box build ${prog}"
+            else
+                echo "[✓] ${prog}: Up to date (Image Version: ${local_version})"
             fi
         done
         ;;
 
+    uninstall)
+        PROGRAM_NAME="$1"
+        if [ -z "$PROGRAM_NAME" ]; then
+            echo "Error: Please specify a program name to uninstall."
+            exit 1
+        fi
+
+        image_name="peterzam/box-${PROGRAM_NAME}"
+        echo "Uninstalling: Cleaning up local podman images matching ${image_name}..."
+        
+        podman rmi $(podman images -q "${image_name}") 2>/dev/null || podman rmi "${image_name}:latest" 2>/dev/null
+
+        if [ $? -eq 0 ]; then
+            echo "[✓] Images associated with '${PROGRAM_NAME}' removed successfully."
+        else
+            echo "[-] No local podman images found for '${PROGRAM_NAME}' or failed to delete."
+        fi
+        ;;
+
     box-install)
+        TARGET_BOX_PATH="$1"
+        if [ -z "$TARGET_BOX_PATH" ]; then
+            TARGET_BOX_PATH="$(pwd)"
+        fi
+        
+        TARGET_BOX_PATH=$(realpath "$TARGET_BOX_PATH")
+
         INSTALL_DIR="$HOME/.local/bin"
         mkdir -p "$INSTALL_DIR"
         
         cp "$0" "$INSTALL_DIR/box"
+        
+        # Lock in the shared parent path folder context
+        sed -i "s|^BOX_PATH=.*|BOX_PATH=\"${TARGET_BOX_PATH}\"|" "$INSTALL_DIR/box"
         chmod +x "$INSTALL_DIR/box"
         
-        echo "Successfully installed 'box' to $INSTALL_DIR/box"
-        echo "Make sure '$INSTALL_DIR' is added to your system's PATH variable."
+        # Automatically structure the parent directory with its core internal workspaces
+        mkdir -p "${TARGET_BOX_PATH}/compose" "${TARGET_BOX_PATH}/mount"
+        
+        echo "Successfully installed 'box' executable tool to $INSTALL_DIR/box"
+        echo "Centralized parent directory:  ${TARGET_BOX_PATH}"
+        echo "Compose workspace subfolder:   ${TARGET_BOX_PATH}/compose"
+        echo "Central mounts subfolder:      ${TARGET_BOX_PATH}/mount"
+        echo "Make sure '$INSTALL_DIR' is configured inside your local environment's PATH."
         ;;
 
     *)
