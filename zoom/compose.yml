@@ -1,0 +1,22 @@
+services:
+  box-zoom:
+    image: localhost/peterzam/box-zoom:latest
+    container_name: "box-zoom"
+    userns_mode: "keep-id:uid=${PUID},gid=${PGID}"
+    cap_add:
+      - SYS_CHROOT
+    devices:
+      - /dev/video0:/dev/video0
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    environment:
+      - XDG_CURRENT_DESKTOP
+      - XDG_RUNTIME_DIR
+      - WAYLAND_DISPLAY
+    volumes:
+      - /run/user/${PUID}/wayland-1:/run/user/1000/wayland-1
+      - ${BOX_MOUNT}/shared/zoom:/home/user/Shared
+      - /run/user/${PUID}/pulse:/run/user/1000/pulse
+      - ${BOX_MOUNT}/configs/zoom/data:/home/user/.zoom
+      - ${BOX_MOUNT}/configs/zoom/config:/home/user/.config
+    command: zoom
